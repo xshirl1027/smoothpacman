@@ -1,2 +1,2 @@
 # smoothpacman
-smooth because it's not pixelated
+it's smooth because it's not pixelated
