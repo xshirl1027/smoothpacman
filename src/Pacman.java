@@ -6,18 +6,18 @@ public class Pacman extends JPanel {
     private int x, y;
     private int incX = 0;
     private int incY = 0;
-
+    private int radius = 10;
     public void changeDir(int incX, int incY){
         this.incX = incX;
         this.incY = incY;
     }
 
     public void moveX(){
-        if(this.incX!=0) this.x = this.x + this.incX;
+        if(this.x<getWidth()-radius && this.x>radius || this.x <= radius && this.incX>0|| this.x >= getWidth()-radius && this.incX<0) this.x = this.x + this.incX;
     }
 
     public void moveY(){
-        if(this.incY!=0) this.y = this.y+ this.incY;
+        if(this.y<getHeight()-radius && this.y>radius || this.y <= radius && this.incY>0 || this.y >= getHeight()-radius && this.incY<0) this.y = this.y+ this.incY;
     }
 
     public Pacman(int x, int y) {
@@ -27,7 +27,7 @@ public class Pacman extends JPanel {
             public void run() {
                 while (true) {
                     repaint();
-                    try {Thread.sleep(10);} catch (Exception ex) {}
+                    try {Thread.sleep(7);} catch (Exception ex) {}
                 }
             }
         });
@@ -37,7 +37,6 @@ public class Pacman extends JPanel {
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        var radius = 10;
         var diameter = radius * 2;
         moveX();
         moveY();
