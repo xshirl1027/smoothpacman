@@ -11,12 +11,12 @@ class MovePacman extends KeyAdapter {
     public void keyPressed(KeyEvent e)
     {
         if (e.getKeyCode()== KeyEvent.VK_UP)
-            this.pacman.changeDir(0,-inc);
+            this.pacman.changeDir(0,-inc, 135);
         if (e.getKeyCode()== KeyEvent.VK_DOWN)
-            this.pacman.changeDir(0, inc);
+            this.pacman.changeDir(0, inc, 315);
         if (e.getKeyCode()== KeyEvent.VK_LEFT)
-            this.pacman.changeDir(-inc,0);
+            this.pacman.changeDir(-inc,0, 225);
         if (e.getKeyCode()== KeyEvent.VK_RIGHT)
-            this.pacman.changeDir(inc, 0);
+            this.pacman.changeDir(inc, 0, 45);
     }
 }
