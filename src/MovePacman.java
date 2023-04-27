@@ -10,13 +10,14 @@ class MovePacman extends KeyAdapter {
     }
     public void keyPressed(KeyEvent e)
     {
+        var pi = 180;
         if (e.getKeyCode()== KeyEvent.VK_UP)
-            this.pacman.changeDir(0,-inc, 135);
+            this.pacman.changeDir(0,-inc, this.pacman.init_start_angle +pi/2);
         if (e.getKeyCode()== KeyEvent.VK_DOWN)
-            this.pacman.changeDir(0, inc, 315);
+            this.pacman.changeDir(0, inc, this.pacman.init_start_angle +pi+pi/2);
         if (e.getKeyCode()== KeyEvent.VK_LEFT)
-            this.pacman.changeDir(-inc,0, 225);
+            this.pacman.changeDir(-inc,0, this.pacman.init_start_angle +pi);
         if (e.getKeyCode()== KeyEvent.VK_RIGHT)
-            this.pacman.changeDir(inc, 0, 45);
+            this.pacman.changeDir(inc, 0, this.pacman.init_start_angle);
     }
 }
