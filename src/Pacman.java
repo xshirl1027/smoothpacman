@@ -8,7 +8,7 @@ import java.awt.*;
 public class Pacman extends JPanel {
 
     private int move_mouth_by = 1;
-    private int angle_inc = 10;
+    private int angle_inc = 5;
     public int init_start_angle = 45;
     private int min_start_angle =45;
     private int max_end_angle = 270;
@@ -20,7 +20,8 @@ public class Pacman extends JPanel {
     private int incX = 0, incY = 0;
     private int radius = 10;
 
-    
+    // Set up a boolean flag to keep track of whether the waka sound clip is playing
+    boolean isWakaPlaying = false;
     private Clip clip;
     private Clip wakaSound;
 
@@ -48,17 +49,7 @@ public class Pacman extends JPanel {
         this.x = x;
         this.y = y;
 
-        try {
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(getClass().getResourceAsStream("waka.wav"));
-            wakaSound = AudioSystem.getClip();
-            wakaSound.open(audioInputStream);
-            FloatControl gainControl = (FloatControl) wakaSound.getControl(FloatControl.Type.MASTER_GAIN);
-            gainControl.setValue(-15.0f);
-            wakaSound.loop(Clip.LOOP_CONTINUOUSLY);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
+        init_waka_sound();
         Thread animationThread = new Thread(new Runnable() {
             public void run() {
                 while (true) {
@@ -73,20 +64,29 @@ public class Pacman extends JPanel {
 
     }
 
-    public void playChompSound() {
+    public void init_waka_sound() {
         try {
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(getClass().getResourceAsStream("waka.wav"));
-            clip = AudioSystem.getClip();
-            clip.open(audioInputStream);
+            wakaSound = AudioSystem.getClip();
+            wakaSound.open(audioInputStream);
+            FloatControl gainControl = (FloatControl) wakaSound.getControl(FloatControl.Type.MASTER_GAIN);
+            gainControl.setValue(-15.0f);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        if (clip.isRunning()) {
-            clip.stop();
+    }
+
+    public void playWakaSound(){
+        try {
+            wakaSound.loop(Clip.LOOP_CONTINUOUSLY);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        clip.setFramePosition(0);
-        SoundPlayer soundPlayer = new SoundPlayer(clip);
-        new Thread(soundPlayer).start();
+    }
+    public void stopWakaClipLoop() {
+        if (wakaSound != null && wakaSound.isRunning()) {
+            wakaSound.stop();
+        }
     }
 
     private void moveMouth(){
@@ -100,7 +100,7 @@ public class Pacman extends JPanel {
     }
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        System.out.println(this.x+" "+this.y+" " + this.prevX + " " + this.prevY);
+//        System.out.println(this.x+" "+this.y+" " + this.prevX + " " + this.prevY);
         if(this.x != this.prevX || this.y != this.prevY){
             isMoving = true;
         }else{
@@ -108,6 +108,15 @@ public class Pacman extends JPanel {
         }
         if(isMoving){
             moveMouth();
+            if(!wakaSound.isRunning()){
+//                System.out.println("is running "+ wakaSound.isRunning());
+//                System.out.println("is moving " + isMoving);
+                playWakaSound();
+            }
+//
+        } else{
+//            System.out.println("stop playing");
+            stopWakaClipLoop();
         }
         moveX();
         moveY();
