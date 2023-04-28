@@ -4,9 +4,14 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 import javax.swing.*;
 import java.awt.*;
+import java.sql.Array;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
 
 public class Pacman extends JPanel {
 
+    private Hashtable<Integer, java.util.List> pellets;
     private int move_mouth_by = 1;
     private int angle_inc = 5;
     public int init_start_angle = 45;
@@ -14,11 +19,24 @@ public class Pacman extends JPanel {
     private int curr_start_angle = 45, curr_end_angle = 270;
     private int x, y;
     private int prevX=0, prevY=0;
-    private boolean isMoving = false;
     private int incX = 0, incY = 0;
     private int radius = 10;
     private Clip wakaSound;
 
+    private void init_pellets(){
+        if(pellets == null){
+            pellets = new Hashtable<>();
+            var x_count = getWidth() / (radius * 2);
+            var y_count = getHeight() / (radius * 2);
+            for (int y = 0; y < y_count; y++){
+                pellets.put(y,new ArrayList());
+                for (int x = 0; x < x_count; x++){
+                    pellets.get(y).add(1);
+                }
+            }
+            System.out.println(pellets);
+        }
+    }
     public void changeDir(int incX, int incY, int init_start_angle){
         this.incX = incX;
         this.incY = incY;
@@ -100,6 +118,7 @@ public class Pacman extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
+        init_pellets();
         if(isPacmanMoving()){
             moveMouth();
             if(!wakaSound.isRunning()){
