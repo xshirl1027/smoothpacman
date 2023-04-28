@@ -10,19 +10,13 @@ public class Pacman extends JPanel {
     private int move_mouth_by = 1;
     private int angle_inc = 5;
     public int init_start_angle = 45;
-    private int min_start_angle =45;
-    private int max_end_angle = 270;
-    private int curr_start_angle = 45;
-    private int curr_end_angle = 270;
+    private int min_start_angle =45, max_end_angle = 270;
+    private int curr_start_angle = 45, curr_end_angle = 270;
     private int x, y;
     private int prevX=0, prevY=0;
     private boolean isMoving = false;
     private int incX = 0, incY = 0;
     private int radius = 10;
-
-    // Set up a boolean flag to keep track of whether the waka sound clip is playing
-    boolean isWakaPlaying = false;
-    private Clip clip;
     private Clip wakaSound;
 
     public void changeDir(int incX, int incY, int init_start_angle){
@@ -83,7 +77,7 @@ public class Pacman extends JPanel {
             ex.printStackTrace();
         }
     }
-    public void stopWakaClipLoop() {
+    public void stopWakaSound() {
         if (wakaSound != null && wakaSound.isRunning()) {
             wakaSound.stop();
         }
@@ -116,7 +110,7 @@ public class Pacman extends JPanel {
 //
         } else{
 //            System.out.println("stop playing");
-            stopWakaClipLoop();
+                stopWakaSound();
         }
         moveX();
         moveY();
@@ -127,7 +121,6 @@ public class Pacman extends JPanel {
 
         g2d.setColor(Color.YELLOW);
         g2d.fillArc(center.x - radius, center.y - radius,  20, 20, curr_start_angle, curr_end_angle);
-
 
     }
 }
