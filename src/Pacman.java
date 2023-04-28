@@ -53,9 +53,7 @@ public class Pacman extends JPanel {
                 }
             }
         });
-
         animationThread.start();
-
     }
 
     public void init_waka_sound() {
@@ -82,7 +80,6 @@ public class Pacman extends JPanel {
             wakaSound.stop();
         }
     }
-
     private void moveMouth(){
         curr_start_angle = min_start_angle - move_mouth_by /2;
         curr_end_angle = max_end_angle + move_mouth_by;
@@ -92,33 +89,31 @@ public class Pacman extends JPanel {
         }
         move_mouth_by = move_mouth_by + angle_inc;
     }
+
+    private boolean isPacmanMoving(){
+        if(this.x != this.prevX || this.y != this.prevY){
+            return true;
+        }else{
+            return false;
+        }
+    }
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-//        System.out.println(this.x+" "+this.y+" " + this.prevX + " " + this.prevY);
-        if(this.x != this.prevX || this.y != this.prevY){
-            isMoving = true;
-        }else{
-            isMoving = false;
-        }
-        if(isMoving){
+
+        if(isPacmanMoving()){
             moveMouth();
             if(!wakaSound.isRunning()){
-//                System.out.println("is running "+ wakaSound.isRunning());
-//                System.out.println("is moving " + isMoving);
                 playWakaSound();
             }
-//
         } else{
-//            System.out.println("stop playing");
                 stopWakaSound();
         }
         moveX();
         moveY();
-        var center = new Point(this.x, this.y);
 
+        var center = new Point(this.x, this.y);
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
         g2d.setColor(Color.YELLOW);
         g2d.fillArc(center.x - radius, center.y - radius,  20, 20, curr_start_angle, curr_end_angle);
 
