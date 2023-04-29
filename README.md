@@ -1,5 +1,5 @@
 # smoothpacman
-non-pixelated version of pacman\
+non-pixelated version of pacman
 
 Uses:\
 Hashtable for the pellets animation\
