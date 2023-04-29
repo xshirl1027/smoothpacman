@@ -20,11 +20,11 @@ public class Main extends JPanel {
      */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            var pacman = new Pacman(50,50);
-            pacman.setBackground(Color.DARK_GRAY.darker());
             var frame = new JFrame("A simple graphics program");
             frame.setSize(600, 600);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            var pacman = new Pacman(585, 560);
+            pacman.setBackground(Color.DARK_GRAY.darker());
             frame.getContentPane().add(pacman, BorderLayout.CENTER);
             frame.addKeyListener(new MovePacman(pacman));
             frame.setVisible(true);

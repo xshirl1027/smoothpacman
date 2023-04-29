@@ -1,17 +1,15 @@
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.FloatControl;
+import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.List;
+
+import static java.lang.Math.floor;
 
 public class Pacman extends JPanel {
 
-    private Hashtable<Integer, java.util.List> pellets;
+    int screenWidth, screenHeight;
+    private Hashtable<Integer, java.util.List<Integer>> pellets;
     private int move_mouth_by = 1;
     private int angle_inc = 5;
     public int init_start_angle = 45;
@@ -23,19 +21,25 @@ public class Pacman extends JPanel {
     private int radius = 10;
     private Clip wakaSound;
 
+    private boolean justAte = false;
+
     private void init_pellets(){
         if(pellets == null){
             pellets = new Hashtable<>();
-            var x_count = getWidth() / (radius * 2);
-            var y_count = getHeight() / (radius * 2);
+            var x_count = screenWidth / (radius * 2);
+            var y_count = screenHeight / (radius * 2);
             for (int y = 0; y < y_count; y++){
                 pellets.put(y,new ArrayList());
                 for (int x = 0; x < x_count; x++){
                     pellets.get(y).add(1);
                 }
             }
-            System.out.println(pellets);
+//            System.out.println(pellets);
         }
+    }
+
+    private void render_pellets(){
+
     }
     public void changeDir(int incX, int incY, int init_start_angle){
         this.incX = incX;
@@ -45,35 +49,37 @@ public class Pacman extends JPanel {
 
     public void moveX(){
         this.prevX = this.x;
-        if(this.x<getWidth()-radius && this.x>radius || this.x <= radius && this.incX>0|| this.x >= getWidth()-radius && this.incX<0){
+        if(this.x<screenWidth-radius && this.x>radius || this.x <= radius && this.incX>0|| this.x >= screenWidth-radius && this.incX<0){
             this.x = this.x + this.incX;
         }
     }
 
     public void moveY(){
         this.prevY = this.y;
-        if(this.y<getHeight()-radius && this.y>radius || this.y <= radius && this.incY>0 || this.y >= getHeight()-radius && this.incY<0){
+        if(this.y<screenHeight-radius && this.y>radius || this.y <= radius && this.incY>0 || this.y >= screenHeight-radius && this.incY<0){
             this.y = this.y + this.incY;
         }
     }
-
-    public Pacman(int x, int y) {
-        this.x = x;
-        this.y = y;
-
+    public Pacman(int screenWidth, int screenHeight) {
+        this.x = 50;
+        this.y = 50;
+        this.screenWidth = screenWidth;
+        this.screenHeight = screenHeight;
         init_waka_sound();
+        init_pellets();
+        start_animation();
+    }
+
+    public void start_animation(){
         Thread animationThread = new Thread(new Runnable() {
             public void run() {
                 while (true) {
                     repaint();
-                    try {Thread.sleep(5
-                    );} catch (Exception ex) {}
                 }
             }
         });
         animationThread.start();
     }
-
     public void init_waka_sound() {
         try {
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(getClass().getResourceAsStream("waka.wav"));
@@ -88,14 +94,15 @@ public class Pacman extends JPanel {
 
     public void playWakaSound(){
         try {
-            wakaSound.loop(Clip.LOOP_CONTINUOUSLY);
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(getClass().getResourceAsStream("waka.wav"));
+            wakaSound = AudioSystem.getClip();
+            wakaSound.open(audioInputStream);
+            FloatControl gainControl = (FloatControl) wakaSound.getControl(FloatControl.Type.MASTER_GAIN);
+            gainControl.setValue(-15.0f);
+            wakaSound.start();
+//            wakaSound.close();
         } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-    public void stopWakaSound() {
-        if (wakaSound != null && wakaSound.isRunning()) {
-            wakaSound.stop();
+            System.out.println("Error playing waka sound: " + ex.getMessage());
         }
     }
     private void moveMouth(){
@@ -115,26 +122,53 @@ public class Pacman extends JPanel {
             return false;
         }
     }
+
+    private int find_block(int p){
+       return (int) floor((double) p / (double) (radius*2));
+    }
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-
-        init_pellets();
-        if(isPacmanMoving()){
-            moveMouth();
-            if(!wakaSound.isRunning()){
-                playWakaSound();
-            }
-        } else{
-                stopWakaSound();
-        }
         moveX();
         moveY();
+        if(isPacmanMoving()){
+            moveMouth();
 
-        var center = new Point(this.x, this.y);
+        }
+        if(!wakaSound.isRunning() && justAte){
+            playWakaSound();
+        }
+
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setColor(Color.YELLOW);
-        g2d.fillArc(center.x - radius, center.y - radius,  20, 20, curr_start_angle, curr_end_angle);
+        g2d.fillArc(this.x - radius, this.y - radius,  20, 20, curr_start_angle, curr_end_angle);
+
+        int x_block = find_block(this.x);
+
+        int y_block = find_block(this.y);
+
+        int prev_x_block = find_block(this.prevX);
+
+        int prev_y_block = find_block(this.prevY);
+
+        if( pellets.get(y_block).get(x_block) == 1){
+            pellets.get(y_block).set(x_block, 0);
+            justAte = true;
+        } else {
+            justAte = false;
+        }
+
+        pellets.forEach((k, v) -> {
+            var c = 0;
+            for (int x : v){
+                if(x==1){
+                    g2d.setColor(Color.WHITE);
+                    g2d.fillOval(c*radius*2 + radius, k*radius*2 + radius,10,10);
+                }
+                c++;
+            }
+        });
+
 
     }
 }
