@@ -1,6 +1,7 @@
 import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
@@ -9,7 +10,7 @@ import static java.lang.Math.floor;
 public class Pacman extends JPanel {
 
     int screenWidth, screenHeight;
-    private Hashtable<Integer, java.util.List<Integer>> pellets;
+    private ArrayList<ArrayList<Integer>>map;
     private int move_mouth_by = 1;
     private int angle_inc = 5;
     public int init_start_angle = 45;
@@ -24,14 +25,14 @@ public class Pacman extends JPanel {
     private boolean justAte = false;
 
     private void init_pellets(){
-        if(pellets == null){
-            pellets = new Hashtable<>();
+        if(map == null){
+            map = new ArrayList<ArrayList<Integer>>();
             var x_count = screenWidth / (radius * 2);
             var y_count = screenHeight / (radius * 2);
             for (int y = 0; y < y_count; y++){
-                pellets.put(y,new ArrayList());
+                map.add(y,new ArrayList());
                 for (int x = 0; x < x_count; x++){
-                    pellets.get(y).add(1);
+                    map.get(y).add(1);
                 }
             }
 //            System.out.println(pellets);
@@ -100,7 +101,6 @@ public class Pacman extends JPanel {
             FloatControl gainControl = (FloatControl) wakaSound.getControl(FloatControl.Type.MASTER_GAIN);
             gainControl.setValue(-15.0f);
             wakaSound.start();
-//            wakaSound.close();
         } catch (Exception ex) {
             System.out.println("Error playing waka sound: " + ex.getMessage());
         }
@@ -147,28 +147,21 @@ public class Pacman extends JPanel {
 
         int y_block = find_block(this.y);
 
-        int prev_x_block = find_block(this.prevX);
-
-        int prev_y_block = find_block(this.prevY);
-
-        if( pellets.get(y_block).get(x_block) == 1){
-            pellets.get(y_block).set(x_block, 0);
+        if( map.get(y_block).get(x_block) == 1){
+            map.get(y_block).set(x_block, 0);
             justAte = true;
         } else {
             justAte = false;
         }
 
-        pellets.forEach((k, v) -> {
-            var c = 0;
-            for (int x : v){
-                if(x==1){
+        for (int y = 0; y<map.size(); y++){
+            for (int x = 0; x<map.get(y).size(); x++){
+                if(map.get(y).get(x) == 1){
                     g2d.setColor(Color.WHITE);
-                    g2d.fillOval(c*radius*2 + radius, k*radius*2 + radius,10,10);
+                    g2d.fillOval(x*radius*2 + radius, y*radius*2 + radius,10,10);
                 }
-                c++;
             }
-        });
-
+        }
 
     }
 }
