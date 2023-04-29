@@ -1,5 +1,6 @@
 # smoothpacman
-it's smooth because it's not pixelated\
+non-pixelated version of pacman\
+
 Uses:\
 Hashtable for the pellets animation\
 
