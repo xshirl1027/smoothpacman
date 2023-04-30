@@ -24,24 +24,24 @@ public class Pacman extends JPanel {
 
     private boolean justAte = false;
 
-    private void init_pellets(){
-        if(map == null){
-            map = new ArrayList<ArrayList<Integer>>();
-            var x_count = screenWidth / (radius * 2);
-            var y_count = screenHeight / (radius * 2);
-            for (int y = 0; y < y_count; y++){
-                map.add(y,new ArrayList());
-                for (int x = 0; x < x_count; x++){
-                    map.get(y).add(1);
-                }
-            }
-//            System.out.println(pellets);
-        }
-    }
-
-    private void render_pellets(){
-
-    }
+//    private void init_pellets(){
+//        if(map == null){
+//            map = new ArrayList<ArrayList<Integer>>();
+//            var x_count = screenWidth / (radius * 2);
+//            var y_count = screenHeight / (radius * 2);
+//            for (int y = 0; y < y_count; y++){
+//                map.add(y,new ArrayList());
+//                for (int x = 0; x < x_count; x++){
+//                    map.get(y).add(1);
+//                }
+//            }
+////            System.out.println(pellets);
+//        }
+//    }
+//
+//    private void render_pellets(){
+//
+//    }
     public void changeDir(int incX, int incY, int init_start_angle){
         this.incX = incX;
         this.incY = incY;
@@ -61,13 +61,13 @@ public class Pacman extends JPanel {
             this.y = this.y + this.incY;
         }
     }
-    public Pacman(int screenWidth, int screenHeight) {
+    public Pacman(int screenWidth, int screenHeight, ArrayList<ArrayList<Integer>> map) {
+        this.map = map;
         this.x = 50;
         this.y = 50;
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
         init_waka_sound();
-        init_pellets();
         start_animation();
     }
 
