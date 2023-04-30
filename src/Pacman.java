@@ -24,53 +24,40 @@ public class Pacman extends JPanel {
 
     private boolean justAte = false;
 
-//    private void init_pellets(){
-//        if(map == null){
-//            map = new ArrayList<ArrayList<Integer>>();
-//            var x_count = screenWidth / (radius * 2);
-//            var y_count = screenHeight / (radius * 2);
-//            for (int y = 0; y < y_count; y++){
-//                map.add(y,new ArrayList());
-//                for (int x = 0; x < x_count; x++){
-//                    map.get(y).add(1);
-//                }
-//            }
-////            System.out.println(pellets);
-//        }
-//    }
-//
-//    private void render_pellets(){
-//
-//    }
+    public Pacman(ArrayList<ArrayList<Integer>> map) {
+        this.map = map;
+        this.x = 30;
+        this.y = 30;
+        this.screenHeight = map.size()*20 + 20;
+        this.screenWidth = map.get(9).size()*20 + 20;
+        init_waka_sound();
+        start_animation();
+    }
+
     public void changeDir(int incX, int incY, int init_start_angle){
         this.incX = incX;
         this.incY = incY;
         this.min_start_angle = init_start_angle;
     }
 
+
     public void moveX(){
         this.prevX = this.x;
-        if(this.x<screenWidth-radius && this.x>radius || this.x <= radius && this.incX>0|| this.x >= screenWidth-radius && this.incX<0){
+        //x is between (0 + radius) and (width - radius)
+        if(this.x<screenWidth-radius-incX && this.x>radius ||
+                this.x>=screenWidth-radius && incX < 0 ||
+                this.x<= 0 + radius && incX > 0){
             this.x = this.x + this.incX;
         }
     }
 
     public void moveY(){
         this.prevY = this.y;
-        if(this.y<screenHeight-radius && this.y>radius || this.y <= radius && this.incY>0 || this.y >= screenHeight-radius && this.incY<0){
+        //if y is between (0 + radius) and (height - radius)
+        if(this.y<screenHeight-radius-incX && this.y>radius || this.y>=screenHeight-radius && incY < 0 || this.y<=radius && incY > 0){
             this.y = this.y + this.incY;
         }
     }
-    public Pacman(int screenWidth, int screenHeight, ArrayList<ArrayList<Integer>> map) {
-        this.map = map;
-        this.x = 50;
-        this.y = 50;
-        this.screenWidth = screenWidth;
-        this.screenHeight = screenHeight;
-        init_waka_sound();
-        start_animation();
-    }
-
     public void start_animation(){
         Thread animationThread = new Thread(new Runnable() {
             public void run() {
@@ -147,18 +134,27 @@ public class Pacman extends JPanel {
 
         int y_block = find_block(this.y);
 
-        if( map.get(y_block).get(x_block) == 1){
-            map.get(y_block).set(x_block, 0);
-            justAte = true;
-        } else {
-            justAte = false;
-        }
 
+        try{
+            if( map.get(y_block).get(x_block) == 1){
+                map.get(y_block).set(x_block, 0);
+                justAte = true;
+            } else {
+                justAte = false;
+            }
+        }catch (Exception e){
+            System.out.println(y_block+" "+x_block);
+        }
+        System.out.println(getWidth() + " " + getHeight());
         for (int y = 0; y<map.size(); y++){
             for (int x = 0; x<map.get(y).size(); x++){
                 if(map.get(y).get(x) == 1){
                     g2d.setColor(Color.WHITE);
-                    g2d.fillOval(x*radius*2 + radius, y*radius*2 + radius,10,10);
+                    g2d.fillOval(x*radius*2 + radius/2, y*radius*2 +radius/2,radius,radius);
+                }
+                if(map.get(y).get(x) == 2){
+                    g2d.setColor(Color.RED);
+                    g2d.drawRect(x*radius*2, y*radius*2,radius*2,radius*2);
                 }
             }
         }

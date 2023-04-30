@@ -33,14 +33,14 @@ public class Main extends JPanel {
         JSONTokener tokener = new JSONTokener(is);
         JSONObject object = new JSONObject(tokener);
         JSONArray map = object.getJSONArray("map");
-        JSONArray temp = (JSONArray) map.get(0);
-        int height = map.length();
-        int width = temp.length();
+        int height = map.length()*20 + 45;
+        int width = ((JSONArray) map.get(0)).length()*20 + 25;
+        System.out.println(height);
         SwingUtilities.invokeLater(() -> {
             var frame = new JFrame("A simple graphics program");
-            frame.setSize(600, 600);
+            frame.setSize(width, height);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            var pacman = new Pacman(600, 600, convertMapToArray(map));
+            var pacman = new Pacman(convertMapToArray(map));
             pacman.setBackground(Color.DARK_GRAY.darker());
             frame.getContentPane().add(pacman, BorderLayout.CENTER);
             frame.addKeyListener(new MovePacman(pacman));
