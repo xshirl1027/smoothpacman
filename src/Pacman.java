@@ -27,7 +27,7 @@ public class Pacman extends JPanel {
     public Pacman(ArrayList<ArrayList<Integer>> map) {
         this.map = map;
         this.x = 30;
-        this.y = 30;
+        this.y = 31;
         this.screenHeight = map.size()*20 + 20;
         this.screenWidth = map.get(9).size()*20 + 20;
         init_waka_sound();
@@ -40,13 +40,48 @@ public class Pacman extends JPanel {
         this.min_start_angle = init_start_angle;
     }
 
+    //this should just be one function that takes in a direction that checks: is there blockage in the block in that direction?
+    public boolean reachedWall_x(int incX){
+        int next_pos;
+        if(incX > 0){
+            next_pos = this.x + incX + this.radius;
+        }else if (incX < 0){
+            next_pos = this.x + incX - this.radius;
+        }else {
+            next_pos = this.x;
+        }
+        int next_pos_block_x = find_block(next_pos);
+        int pos_block_y = find_block(this.y);
+        if(map.get(pos_block_y).get(next_pos_block_x) == 2){
+            return true;
+        }else{
+            return false;
+        }
+    }
 
+    public boolean reachedWall_y(int incY){
+        int next_pos;
+        if(incY>0){
+            next_pos = this.y + incY + this.radius;
+        }else if (incY<0){
+            next_pos = this.y + incY - this.radius;
+        }else {
+            next_pos = this.y;
+        }
+        int next_pos_block_y = find_block(next_pos);
+        int pos_block_x = find_block(this.x);
+        if(map.get(next_pos_block_y).get(pos_block_x) == 2){
+            return true;
+        }else{
+            return false;
+        }
+    }
     public void moveX(){
         this.prevX = this.x;
         //x is between (0 + radius) and (width - radius)
-        if(this.x<screenWidth-radius-incX && this.x>radius ||
+        if(!reachedWall_x(this.incX) && (this.x<screenWidth-radius-incX && this.x>radius ||
                 this.x>=screenWidth-radius && incX < 0 ||
-                this.x<= 0 + radius && incX > 0){
+                this.x<= 0 + radius && incX > 0)){
             this.x = this.x + this.incX;
         }
     }
@@ -54,7 +89,7 @@ public class Pacman extends JPanel {
     public void moveY(){
         this.prevY = this.y;
         //if y is between (0 + radius) and (height - radius)
-        if(this.y<screenHeight-radius-incX && this.y>radius || this.y>=screenHeight-radius && incY < 0 || this.y<=radius && incY > 0){
+        if(!reachedWall_y(this.incY)&&(this.y<screenHeight-radius-incX && this.y>radius || this.y>=screenHeight-radius && incY < 0 || this.y<=radius && incY > 0)){
             this.y = this.y + this.incY;
         }
     }
@@ -63,6 +98,7 @@ public class Pacman extends JPanel {
             public void run() {
                 while (true) {
                     repaint();
+                    try {Thread.sleep(6);} catch (Exception ex) {}
                 }
             }
         });
@@ -145,7 +181,6 @@ public class Pacman extends JPanel {
         }catch (Exception e){
             System.out.println(y_block+" "+x_block);
         }
-        System.out.println(getWidth() + " " + getHeight());
         for (int y = 0; y<map.size(); y++){
             for (int x = 0; x<map.get(y).size(); x++){
                 if(map.get(y).get(x) == 1){
