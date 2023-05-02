@@ -5,8 +5,6 @@ import org.json.JSONArray;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.io.InputStream;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import javax.swing.SwingUtilities;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -48,13 +46,11 @@ public class Main extends JPanel {
         });
     }
 
-   public static ArrayList<ArrayList<Integer>> convertMapToArray(JSONArray jsonMap){
-        ArrayList<ArrayList<Integer>> map = new ArrayList<>();
+   public static int[][] convertMapToArray(JSONArray jsonMap){
+        int[][] map = new int[jsonMap.length()][((JSONArray)jsonMap.get(0)).length()];
         for(int i=0;i<jsonMap.length();i++){
-            map.add(new ArrayList<>());
-            JSONArray temp= (JSONArray)jsonMap.get(i);
-            for(int j = 0; j<temp.length() ; j++)
-            map.get(i).add((Integer) temp.get(j));
+            for(int j = 0; j<((JSONArray)jsonMap.get(0)).length() ; j++)
+            map[i][j] =(Integer)((JSONArray)jsonMap.get(i)).get(j);
         }
         return map;
     }

@@ -10,7 +10,9 @@ import static java.lang.Math.floor;
 public class Pacman extends JPanel {
 
     int screenWidth, screenHeight;
-    private ArrayList<ArrayList<Integer>>map;
+
+    int screenWidthMinusRadius, screenHeightMinusRadius;
+    int[][]map;
     private int move_mouth_by = 1;
     private int angle_inc = 5;
     public int init_start_angle = 45;
@@ -20,16 +22,19 @@ public class Pacman extends JPanel {
     private int prevX=0, prevY=0;
     private int incX = 0, incY = 0;
     private int radius = 10;
+    private int smallRadius = 6;
     private Clip wakaSound;
 
     private boolean justAte = false;
 
-    public Pacman(ArrayList<ArrayList<Integer>> map) {
+    public Pacman(int[][]map) {
         this.map = map;
-        this.x = 30;
+        this.x = 31;
         this.y = 31;
-        this.screenHeight = map.size()*20 + 20;
-        this.screenWidth = map.get(9).size()*20 + 20;
+        this.screenHeight = map.length*20 + 20;
+        this.screenWidth = map[9].length*20 + 20;
+        this.screenHeightMinusRadius = this.screenHeight - radius;
+        this.screenWidthMinusRadius = this.screenWidth - radius;
         init_waka_sound();
         start_animation();
     }
@@ -51,8 +56,9 @@ public class Pacman extends JPanel {
             next_pos = this.x;
         }
         int next_pos_block_x = find_block(next_pos);
-        int pos_block_y = find_block(this.y);
-        if(map.get(pos_block_y).get(next_pos_block_x) == 2){
+        int pos_block_y = find_block(this.y+ smallRadius);
+        int pos_block_y2 = find_block(this.y - smallRadius);
+        if(map[pos_block_y][next_pos_block_x] == 2 || map[pos_block_y2][next_pos_block_x] == 2){
             return true;
         }else{
             return false;
@@ -69,8 +75,9 @@ public class Pacman extends JPanel {
             next_pos = this.y;
         }
         int next_pos_block_y = find_block(next_pos);
-        int pos_block_x = find_block(this.x);
-        if(map.get(next_pos_block_y).get(pos_block_x) == 2){
+        int pos_block_x = find_block(this.x + smallRadius);
+        int pos_block_x2 = find_block(this.x - smallRadius);
+        if(map[next_pos_block_y][pos_block_x] == 2 || map[next_pos_block_y][pos_block_x2] == 2){
             return true;
         }else{
             return false;
@@ -79,8 +86,8 @@ public class Pacman extends JPanel {
     public void moveX(){
         this.prevX = this.x;
         //x is between (0 + radius) and (width - radius)
-        if(!reachedWall_x(this.incX) && (this.x<screenWidth-radius-incX && this.x>radius ||
-                this.x>=screenWidth-radius && incX < 0 ||
+        if(!reachedWall_x(this.incX) && (this.x<screenWidthMinusRadius-incX && this.x>radius ||
+                this.x>=screenWidthMinusRadius && incX < 0 ||
                 this.x<= 0 + radius && incX > 0)){
             this.x = this.x + this.incX;
         }
@@ -89,7 +96,8 @@ public class Pacman extends JPanel {
     public void moveY(){
         this.prevY = this.y;
         //if y is between (0 + radius) and (height - radius)
-        if(!reachedWall_y(this.incY)&&(this.y<screenHeight-radius-incX && this.y>radius || this.y>=screenHeight-radius && incY < 0 || this.y<=radius && incY > 0)){
+        if(!reachedWall_y(this.incY)&&(this.y<screenHeightMinusRadius-incX && this.y>radius ||
+                this.y>=screenHeightMinusRadius && incY < 0 || this.y<=radius && incY > 0)){
             this.y = this.y + this.incY;
         }
     }
@@ -98,7 +106,7 @@ public class Pacman extends JPanel {
             public void run() {
                 while (true) {
                     repaint();
-                    try {Thread.sleep(6);} catch (Exception ex) {}
+//                    try {Thread.sleep(2);} catch (Exception ex) {}
                 }
             }
         });
@@ -170,10 +178,9 @@ public class Pacman extends JPanel {
 
         int y_block = find_block(this.y);
 
-
         try{
-            if( map.get(y_block).get(x_block) == 1){
-                map.get(y_block).set(x_block, 0);
+            if( map[y_block][x_block] == 1){
+                map[y_block][x_block]=0;
                 justAte = true;
             } else {
                 justAte = false;
@@ -181,13 +188,13 @@ public class Pacman extends JPanel {
         }catch (Exception e){
             System.out.println(y_block+" "+x_block);
         }
-        for (int y = 0; y<map.size(); y++){
-            for (int x = 0; x<map.get(y).size(); x++){
-                if(map.get(y).get(x) == 1){
+        for (int y = 0; y<map.length; y++){
+            for (int x = 0; x<map[y].length; x++){
+                if(map[y][x] == 1){
                     g2d.setColor(Color.WHITE);
                     g2d.fillOval(x*radius*2 + radius/2, y*radius*2 +radius/2,radius,radius);
                 }
-                if(map.get(y).get(x) == 2){
+                if(map[y][x] == 2){
                     g2d.setColor(Color.RED);
                     g2d.drawRect(x*radius*2, y*radius*2,radius*2,radius*2);
                 }
