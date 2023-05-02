@@ -22,6 +22,8 @@ public class Pacman extends JPanel {
     private int prevX=0, prevY=0;
     private int incX = 0, incY = 0;
     private int radius = 10;
+    private int halfRadius = radius/2;
+    private int diameter = radius*2;
     private int smallRadius = 6;
     private Clip wakaSound;
 
@@ -35,7 +37,6 @@ public class Pacman extends JPanel {
         this.screenWidth = map[9].length*20 + 20;
         this.screenHeightMinusRadius = this.screenHeight - radius;
         this.screenWidthMinusRadius = this.screenWidth - radius;
-        init_waka_sound();
         start_animation();
     }
 
@@ -88,7 +89,7 @@ public class Pacman extends JPanel {
         //x is between (0 + radius) and (width - radius)
         if(!reachedWall_x(this.incX) && (this.x<screenWidthMinusRadius-incX && this.x>radius ||
                 this.x>=screenWidthMinusRadius && incX < 0 ||
-                this.x<= 0 + radius && incX > 0)){
+                this.x<= radius && incX > 0)){
             this.x = this.x + this.incX;
         }
     }
@@ -111,17 +112,6 @@ public class Pacman extends JPanel {
             }
         });
         animationThread.start();
-    }
-    public void init_waka_sound() {
-        try {
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(getClass().getResourceAsStream("waka.wav"));
-            wakaSound = AudioSystem.getClip();
-            wakaSound.open(audioInputStream);
-            FloatControl gainControl = (FloatControl) wakaSound.getControl(FloatControl.Type.MASTER_GAIN);
-            gainControl.setValue(-15.0f);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
     }
 
     public void playWakaSound(){
@@ -155,7 +145,7 @@ public class Pacman extends JPanel {
     }
 
     private int find_block(int p){
-       return (int) floor((double) p / (double) (radius*2));
+       return (int) floor((double) p / (double) (diameter));
     }
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -165,7 +155,8 @@ public class Pacman extends JPanel {
             moveMouth();
 
         }
-        if(!wakaSound.isRunning() && justAte){
+        if(wakaSound==null || (!wakaSound.isRunning() && justAte)){
+            if(wakaSound!=null) wakaSound.close();
             playWakaSound();
         }
 
@@ -192,11 +183,11 @@ public class Pacman extends JPanel {
             for (int x = 0; x<map[y].length; x++){
                 if(map[y][x] == 1){
                     g2d.setColor(Color.WHITE);
-                    g2d.fillOval(x*radius*2 + radius/2, y*radius*2 +radius/2,radius,radius);
+                    g2d.fillOval(x*diameter + halfRadius, y*diameter + halfRadius,radius,radius);
                 }
                 if(map[y][x] == 2){
                     g2d.setColor(Color.RED);
-                    g2d.drawRect(x*radius*2, y*radius*2,radius*2,radius*2);
+                    g2d.drawRect(x*diameter, y*diameter,diameter,diameter);
                 }
             }
         }
