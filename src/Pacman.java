@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 
 import static java.lang.Math.floor;
+import static java.lang.Math.round;
 
 public class Pacman extends JPanel {
 
@@ -27,17 +28,22 @@ public class Pacman extends JPanel {
     private int radius = 10;
     private int halfRadius = radius/2;
     private int diameter = radius*2;
+
     private int smallRadius = 2;
     private Clip wakaSound;
     private BufferedImage background;
     private boolean justAte = false;
 
+    private int num_x_block = 0;
+    private int num_y_block = 0;
     public Pacman(int[][]map) {
         this.map = map;
         this.x = 31;
         this.y = 171;
-        this.screenHeight = map.length*20 + 20;
-        this.screenWidth = map[9].length*20 + 20;
+        num_x_block = map[9].length;
+        num_y_block = map.length;
+        this.screenHeight = num_y_block*20 + 20;
+        this.screenWidth = num_x_block*20 + 20;
         this.screenHeightMinusRadius = this.screenHeight - radius;
         this.screenWidthMinusRadius = this.screenWidth - radius;
         renderBackground();
@@ -52,34 +58,48 @@ public class Pacman extends JPanel {
         for (int y = 0; y<map.length; y++){
             for (int x = 0; x<map[y].length; x++){
                 if(map[y][x] == 2){
-                    g2d.setColor(Color.RED);
-                    g2d.drawRect(x*diameter, y*diameter,diameter,diameter);
+                    g2d.setColor(Color.blue);
+                    g2d.drawRect(x*diameter, y*diameter+5,diameter,radius);
+                }
+                if(map[y][x] == 3){
+                    g2d.setColor(Color.blue);
+                    g2d.drawRect(x*diameter+5, y*diameter,radius,diameter);
+                }
+                if(map[y][x] == 4){
+                    g2d.setColor(Color.blue);
+                    g2d.drawRect(x*diameter+5, y*diameter+5,diameter-5,radius);
+                    g2d.drawRect(x*diameter+5, y*diameter+5,radius,diameter-5);
+                }
+                if(map[y][x] == 5){
+                    g2d.setColor(Color.blue);
+                    g2d.drawRect(x*diameter, y*diameter+5,diameter-5,radius);
+                    g2d.drawRect(x*diameter+5, y*diameter+5,radius,diameter-5);
+                }
+                if(map[y][x] == 6){
+                    g2d.setColor(Color.blue);
+                    g2d.drawRect(x*diameter, y*diameter+5,diameter-5,radius);
+                    g2d.drawRect(x*diameter+5, y*diameter,radius,diameter-5);
+                }
+                if(map[y][x] == 7){
+                    g2d.setColor(Color.blue);
+                    g2d.drawRect(x*diameter+5, y*diameter+5,diameter-5,radius);
+                    g2d.drawRect(x*diameter+5, y*diameter,radius,diameter-5);
+                }
+                if(map[y][x] == 8){
+                    g2d.setColor(Color.blue);
+                    g2d.drawRect(x*diameter+5, y*diameter+5,radius,diameter-5);
                 }
                 if(map[y][x] == 1){
                     g2d.setColor(Color.WHITE);
                     g2d.fillOval(x*diameter + halfRadius, y*diameter + halfRadius,radius,radius);
                 }
-                if(map[y][x] == 7){
+                if(map[y][x] == -1){
                     g2d.setColor(Color.blue);
                     g2d.fillOval(x*diameter + halfRadius, y*diameter + halfRadius,radius,radius);
                 }
             }
         }
         g2d.dispose();
-//
-//        // save the image to a file
-//        try {
-//            ImageIO.write(backgroundImage, "png", new File("background.png"));
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//        }
-//
-//        // load the image and set it as the background
-//        try {
-//            backgroundImage = ImageIO.read(new File("background.png"));
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//        }
     }
 
     public void changeDir(int incX, int incY, int init_start_angle){
@@ -101,11 +121,17 @@ public class Pacman extends JPanel {
         int next_pos_block_x = find_block(next_pos);
         int pos_block_y = find_block(this.y+ smallRadius);
         int pos_block_y2 = find_block(this.y - smallRadius);
-        if(map[pos_block_y][next_pos_block_x] == 2 || map[pos_block_y2][next_pos_block_x] == 2){
-            return true;
-        }else{
-            return false;
+        try{
+            if(map[pos_block_y][next_pos_block_x] >= 2 || map[pos_block_y2][next_pos_block_x] >= 2){
+                return true;
+            }else{
+                return false;
+            }
+        }catch(Exception E){
+            System.out.println(this.x/diameter + " " + this.y/diameter);
         }
+        return false;
+
     }
 
     public boolean reachedWall_y(int incY){
@@ -120,11 +146,16 @@ public class Pacman extends JPanel {
         int next_pos_block_y = find_block(next_pos);
         int pos_block_x = find_block(this.x + smallRadius);
         int pos_block_x2 = find_block(this.x - smallRadius);
-        if(map[next_pos_block_y][pos_block_x] == 2 || map[next_pos_block_y][pos_block_x2] == 2){
-            return true;
-        }else{
-            return false;
+        try{
+            if(map[next_pos_block_y][pos_block_x] >= 2 || map[next_pos_block_y][pos_block_x2] >= 2){
+                return true;
+            }else{
+                return false;
+            }
+        }catch (Exception e){
+            System.out.println(this.x/diameter + " " +this.y/diameter);
         }
+        return false;
     }
     public void moveX(){
         this.prevX = this.x;
@@ -186,6 +217,14 @@ public class Pacman extends JPanel {
         }
     }
 
+    private void resetIfPacmanReachedEdge(){
+        if(this.x/diameter >= num_x_block){
+            this.x=diameter;
+        }
+        if(this.x < radius+1){
+            this.x=(num_x_block-1)*diameter;
+        }
+    }
     private int find_block(int p){
        return (int) floor((double) p / (double) (diameter));
     }
@@ -194,6 +233,7 @@ public class Pacman extends JPanel {
         g.drawImage(background, 0, 0, null);
         moveX();
         moveY();
+        resetIfPacmanReachedEdge();
         if(isPacmanMoving()){
             moveMouth();
 
@@ -211,14 +251,14 @@ public class Pacman extends JPanel {
         int y_block = find_block(this.y);
 
         try{
-            if( map[y_block][x_block] == 1 || map[y_block][x_block] == 7){
+            if( map[y_block][x_block] == 1 || map[y_block][x_block] == -1){
                 map[y_block][x_block]=0;
                 justAte = true;
             } else {
                 justAte = false;
             }
         }catch (Exception e){
-            System.out.println(y_block+" "+x_block);
+            System.out.println(this.x+" "+this.y);
         }
         for (int y = 0; y<map.length; y++){
             for (int x = 0; x<map[y].length; x++){

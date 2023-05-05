@@ -39,7 +39,6 @@ public class Main extends JPanel {
             frame.setSize(width, height);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             var pacman = new Pacman(convertMapToArray(map));
-//            pacman.setBackground(Color.black.darker());
             frame.getContentPane().add(pacman, BorderLayout.CENTER);
             frame.addKeyListener(new MovePacman(pacman));
             frame.setVisible(true);

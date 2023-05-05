@@ -4,7 +4,7 @@ import java.awt.event.KeyEvent;
 class MovePacman extends KeyAdapter {
 
     Pacman pacman;
-    int inc = 2;
+    int inc = 1;
     int inc2 = 2;
     public MovePacman(Pacman pacman){
         this.pacman = pacman;
