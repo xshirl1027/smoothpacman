@@ -1,6 +1,9 @@
+import javax.imageio.ImageIO;
 import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -27,17 +30,49 @@ public class Pacman extends JPanel {
     private int smallRadius = 3;
     private Clip wakaSound;
 
+    private BufferedImage background;
     private boolean justAte = false;
 
     public Pacman(int[][]map) {
         this.map = map;
         this.x = 31;
-        this.y = 31;
+        this.y = 171;
         this.screenHeight = map.length*20 + 20;
         this.screenWidth = map[9].length*20 + 20;
         this.screenHeightMinusRadius = this.screenHeight - radius;
         this.screenWidthMinusRadius = this.screenWidth - radius;
+        renderBackground();
         start_animation();
+    }
+
+    private void renderBackground(){
+        background = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2d = background.createGraphics();
+        g2d.setColor(Color.BLACK);
+        g2d.fillRect(0, 0, screenWidth, screenHeight);
+        for (int y = 0; y<map.length; y++){
+            for (int x = 0; x<map[y].length; x++){
+                if(map[y][x] == 2){
+                    g2d.setColor(Color.RED);
+                    g2d.drawRect(x*diameter, y*diameter,diameter,diameter);
+                }
+            }
+        }
+        g2d.dispose();
+//
+//        // save the image to a file
+//        try {
+//            ImageIO.write(backgroundImage, "png", new File("background.png"));
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
+//
+//        // load the image and set it as the background
+//        try {
+//            backgroundImage = ImageIO.read(new File("background.png"));
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
     }
 
     public void changeDir(int incX, int incY, int init_start_angle){
@@ -149,6 +184,7 @@ public class Pacman extends JPanel {
     }
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        g.drawImage(background, 0, 0, null);
         moveX();
         moveY();
         if(isPacmanMoving()){
@@ -168,7 +204,7 @@ public class Pacman extends JPanel {
         int y_block = find_block(this.y);
 
         try{
-            if( map[y_block][x_block] == 1){
+            if( map[y_block][x_block] == 1 || map[y_block][x_block] == 7){
                 map[y_block][x_block]=0;
                 justAte = true;
             } else {
@@ -187,9 +223,9 @@ public class Pacman extends JPanel {
                     g2d.setColor(Color.BLACK); //up as pellets disappear
                     g2d.fillOval(x*diameter + halfRadius, y*diameter + halfRadius,radius,radius);
                 }
-                if(map[y][x] == 2){
-//                    g2d.setColor(Color.RED);
-//                    g2d.drawFillRect(x*diameter, y*diameter,diameter,diameter);
+                if(map[y][x] == 7){
+                    g2d.setColor(Color.blue);
+                    g2d.fillOval(x*diameter + halfRadius, y*diameter + halfRadius,radius,radius);
                 }
             }
         }
