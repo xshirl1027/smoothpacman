@@ -1,15 +1,9 @@
-import javax.imageio.ImageIO;
 import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Hashtable;
 
 import static java.lang.Math.floor;
-import static java.lang.Math.round;
 
 public class Pacman extends JPanel {
 
