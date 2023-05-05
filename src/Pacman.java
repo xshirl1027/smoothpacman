@@ -27,9 +27,8 @@ public class Pacman extends JPanel {
     private int radius = 10;
     private int halfRadius = radius/2;
     private int diameter = radius*2;
-    private int smallRadius = 3;
+    private int smallRadius = 2;
     private Clip wakaSound;
-
     private BufferedImage background;
     private boolean justAte = false;
 
@@ -55,6 +54,14 @@ public class Pacman extends JPanel {
                 if(map[y][x] == 2){
                     g2d.setColor(Color.RED);
                     g2d.drawRect(x*diameter, y*diameter,diameter,diameter);
+                }
+                if(map[y][x] == 1){
+                    g2d.setColor(Color.WHITE);
+                    g2d.fillOval(x*diameter + halfRadius, y*diameter + halfRadius,radius,radius);
+                }
+                if(map[y][x] == 7){
+                    g2d.setColor(Color.blue);
+                    g2d.fillOval(x*diameter + halfRadius, y*diameter + halfRadius,radius,radius);
                 }
             }
         }
@@ -215,17 +222,9 @@ public class Pacman extends JPanel {
         }
         for (int y = 0; y<map.length; y++){
             for (int x = 0; x<map[y].length; x++){
-                if(map[y][x] == 1){
-                    g2d.setColor(Color.WHITE);
-                    g2d.fillOval(x*diameter + halfRadius, y*diameter + halfRadius,radius,radius);
-                }
                 if(map[y][x] == 0){             //i need to do this to maintain constant speed. otherwise pacman speeds
                     g2d.setColor(Color.BLACK); //up as pellets disappear
-                    g2d.fillOval(x*diameter + halfRadius, y*diameter + halfRadius,radius,radius);
-                }
-                if(map[y][x] == 7){
-                    g2d.setColor(Color.blue);
-                    g2d.fillOval(x*diameter + halfRadius, y*diameter + halfRadius,radius,radius);
+                    g2d.fillOval(x*diameter + halfRadius, y*diameter + halfRadius,radius+1,radius+1);
                 }
             }
         }
