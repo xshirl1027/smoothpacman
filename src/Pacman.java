@@ -24,7 +24,7 @@ public class Pacman extends JPanel {
     private int radius = 10;
     private int halfRadius = radius/2;
     private int diameter = radius*2;
-    private int smallRadius = 6;
+    private int smallRadius = 3;
     private Clip wakaSound;
 
     private boolean justAte = false;
@@ -162,8 +162,6 @@ public class Pacman extends JPanel {
 
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2d.setColor(Color.YELLOW);
-        g2d.fillArc(this.x - radius, this.y - radius,  20, 20, curr_start_angle, curr_end_angle);
 
         int x_block = find_block(this.x);
 
@@ -185,12 +183,18 @@ public class Pacman extends JPanel {
                     g2d.setColor(Color.WHITE);
                     g2d.fillOval(x*diameter + halfRadius, y*diameter + halfRadius,radius,radius);
                 }
+                if(map[y][x] == 0){             //i need to do this to maintain constant speed. otherwise pacman speeds
+                    g2d.setColor(Color.BLACK); //up as pellets disappear
+                    g2d.fillOval(x*diameter + halfRadius, y*diameter + halfRadius,radius,radius);
+                }
                 if(map[y][x] == 2){
-                    g2d.setColor(Color.RED);
-                    g2d.drawRect(x*diameter, y*diameter,diameter,diameter);
+//                    g2d.setColor(Color.RED);
+//                    g2d.drawFillRect(x*diameter, y*diameter,diameter,diameter);
                 }
             }
         }
+        g2d.setColor(Color.YELLOW);
+        g2d.fillArc(this.x - radius, this.y - radius,  20, 20, curr_start_angle, curr_end_angle);
 
     }
 }
