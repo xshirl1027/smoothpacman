@@ -27,7 +27,7 @@ public class Pacman extends JPanel {
     private boolean justAte = false;
     private int num_x_block = 0;
     private int num_y_block = 0;
-    private ArrayList<GhostScrapped> ghosts;
+    private ArrayList<Ghost> ghosts;
     public Pacman(int[][]map) {
         this.map = map;
         this.x = 31;
@@ -86,7 +86,7 @@ public class Pacman extends JPanel {
                     g2d.drawRect(x*diameter+5, y*diameter,radius,diameter-5);
                 }
                 if(map[y][x] == -2){
-                    this.ghosts.add(new GhostScrapped(x*diameter, y*diameter, Color.RED, map));
+                    this.ghosts.add(new Ghost(x*diameter, y*diameter, Color.RED, null));
                 }
             }
         }
@@ -177,13 +177,6 @@ public class Pacman extends JPanel {
                         resetIfPacmanReachedEdge();
                         if(isPacmanMoving()){
                             moveMouth();
-//                            for (int i = 0; i<ghosts.size(); i++){
-//
-//                            }
-                        }
-                        for (int i = 0; i<ghosts.size(); i++){
-                            ghosts.get(i).setTargetPosition(new Point(x, y));
-                            ghosts.get(i).move();
                         }
                         if(wakaSound==null || (!wakaSound.isRunning() && justAte)){
                             if(wakaSound!=null) wakaSound.close();
