@@ -1,18 +1,16 @@
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-class MovePacman extends KeyAdapter {
+class GameController extends KeyAdapter {
 
     Pacman pacman;
     int inc = 1;
     int inc2 = 2;
-    public MovePacman(Pacman pacman){
+    public GameController(Pacman pacman){
         this.pacman = pacman;
     }
     public void keyPressed(KeyEvent e)
     {
-        var pi = 180;
-        int prevDir = this.pacman.getDirection();
         if (e.getKeyCode()== KeyEvent.VK_UP && !pacman.isWallThere(pacman.UP))
             this.pacman.changeDir(Pacman.UP);
         if (e.getKeyCode()== KeyEvent.VK_DOWN && !pacman.isWallThere(pacman.DOWN))

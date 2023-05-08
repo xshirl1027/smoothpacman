@@ -3,7 +3,6 @@ import org.json.JSONTokener;
 import org.json.JSONArray;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.io.InputStream;
 import javax.swing.SwingUtilities;
 import javax.swing.JFrame;
@@ -40,7 +39,7 @@ public class Main extends JPanel {
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             var pacman = new Pacman(convertMapToArray(map));
             frame.getContentPane().add(pacman, BorderLayout.CENTER);
-            frame.addKeyListener(new MovePacman(pacman));
+            frame.addKeyListener(new GameController(pacman));
             frame.setVisible(true);
         });
     }

@@ -37,7 +37,7 @@ public class Pacman extends JPanel {
         this.map = map;
         this.direction = -1; //stationary
         this.x = 31;
-        this.y = 171;
+        this.y = 170;
         num_x_block = map[9].length;
         num_y_block = map.length;
         this.screenHeight = num_y_block*20 + 5;
@@ -103,36 +103,7 @@ public class Pacman extends JPanel {
         this.min_start_angle = angles.get(direction);
     }
 
-    public int getDirection(){
-        return this.direction;
-    }
-
-    //check if there is a wall in the direction pacman is moving
-    public boolean reachedWall_x(){
-        int next_pos = 0;
-        if(direction == 2){
-            next_pos = this.x - this.radius - 1;
-        }else if(direction == 3){
-            next_pos = this.x + this.radius + 1;
-        }else { //pacman is not moving along the x-axis, we don't care
-            return false;
-        }
-        int next_pos_block_x = find_block(next_pos);
-        int pos_block_y = find_block(this.y + smallRadius + 1);
-        int pos_block_y2 = find_block(this.y - smallRadius + 1);
-        try{
-            if(map[pos_block_y][next_pos_block_x] >= 2 || map[pos_block_y2][next_pos_block_x] >= 2){
-                return true;
-            }else{
-                return false;
-            }
-        }catch(Exception E){
-            System.out.println(E.getMessage());
-        }
-        return false;
-
-    }
-
+    //check if there is a wall in the direction given
     public boolean isWallThere(int direction){
         int future_pos;
         if(direction == UP){
@@ -175,45 +146,21 @@ public class Pacman extends JPanel {
         }
         return false;
     }
-    public boolean reachedWall_y(){
-        int next_pos;
-        if(direction == 0){
-            next_pos = this.y - this.radius - 1;
-        }else if(direction == 1){
-            next_pos = this.y + this.radius + 1;
-        }else { //pacman is not moving along the y-axis, we don't care
-            return false;
-        }
-        int next_pos_block_y = find_block(next_pos);
-        int pos_block_x = find_block(this.x + smallRadius +1);
-        int pos_block_x2 = find_block(this.x - smallRadius + 1);
-        try{
-            if(map[next_pos_block_y][pos_block_x] >= 2 || map[next_pos_block_y][pos_block_x2] >= 2){
-                return true;
-            }else{
-                return false;
-            }
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-        }
-        return false;
-    }
-
     public void move(){
         this.prevX = this.x;
         this.prevY = this.y;
         var inc = 1;
         //x is between (0 + radius) and (width - radius)
-        if(direction == 0 && !reachedWall_y()){
+        if(direction == 0 && !isWallThere(UP)){
             this.y--;
         }
-        if(direction == 1 && !reachedWall_y()){
+        if(direction == 1 && !isWallThere(DOWN)){
             this.y++;
         }
-        if(direction == 2 && !reachedWall_x()){
+        if(direction == 2 && !isWallThere(LEFT)){
             this.x--;
         }
-        if(direction == 3 && !reachedWall_x()){
+        if(direction == 3 && !isWallThere(RIGHT)){
             this.x++;
         }
     }
