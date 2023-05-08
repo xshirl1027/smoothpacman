@@ -2,6 +2,7 @@ import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 import static java.lang.Math.floor;
 
@@ -10,7 +11,7 @@ public class Pacman extends JPanel {
     int screenWidthMinusRadius, screenHeightMinusRadius;
     int[][]map;
     private int move_mouth_by = 1;
-    private int angle_inc = 5;
+    private int angle_inc = 3;
     public int init_start_angle = 45;
     private int min_start_angle =45, max_end_angle = 270;
     private int curr_start_angle = 45, curr_end_angle = 270;
@@ -20,22 +21,24 @@ public class Pacman extends JPanel {
     private int radius = 10;
     private int halfRadius = radius/2;
     private int diameter = radius*2;
-    private int smallRadius = 2;
+    private int smallRadius = 0;
     private Clip wakaSound;
     private BufferedImage background;
     private boolean justAte = false;
     private int num_x_block = 0;
     private int num_y_block = 0;
+    private ArrayList<GhostScrapped> ghosts;
     public Pacman(int[][]map) {
         this.map = map;
         this.x = 31;
         this.y = 171;
         num_x_block = map[9].length;
         num_y_block = map.length;
-        this.screenHeight = num_y_block*20 + 20;
-        this.screenWidth = num_x_block*20 + 20;
+        this.screenHeight = num_y_block*20 + 5;
+        this.screenWidth = num_x_block*20 + 65;
         this.screenHeightMinusRadius = this.screenHeight - radius;
         this.screenWidthMinusRadius = this.screenWidth - radius;
+        this.ghosts = new ArrayList<>();
         renderBackground();
         start_animation();
     }
@@ -46,6 +49,14 @@ public class Pacman extends JPanel {
         g2d.fillRect(0, 0, screenWidth, screenHeight);
         for (int y = 0; y<map.length; y++){
             for (int x = 0; x<map[y].length; x++){
+                if(map[y][x] == -1){
+                    g2d.setColor(Color.blue);
+                    g2d.fillOval(x*diameter + halfRadius, y*diameter + halfRadius,radius,radius);
+                }
+                if(map[y][x] == 1){
+                    g2d.setColor(Color.WHITE);
+                    g2d.fillOval(x*diameter + halfRadius, y*diameter + halfRadius,radius,radius);
+                }
                 if(map[y][x] == 2){
                     g2d.setColor(Color.blue);
                     g2d.drawRect(x*diameter, y*diameter+5,diameter,radius);
@@ -74,17 +85,8 @@ public class Pacman extends JPanel {
                     g2d.drawRect(x*diameter+5, y*diameter+5,diameter-5,radius);
                     g2d.drawRect(x*diameter+5, y*diameter,radius,diameter-5);
                 }
-                if(map[y][x] == 8){
-                    g2d.setColor(Color.blue);
-                    g2d.drawRect(x*diameter+5, y*diameter+5,radius,diameter-5);
-                }
-                if(map[y][x] == 1){
-                    g2d.setColor(Color.WHITE);
-                    g2d.fillOval(x*diameter + halfRadius, y*diameter + halfRadius,radius,radius);
-                }
-                if(map[y][x] == -1){
-                    g2d.setColor(Color.blue);
-                    g2d.fillOval(x*diameter + halfRadius, y*diameter + halfRadius,radius,radius);
+                if(map[y][x] == -2){
+                    this.ghosts.add(new GhostScrapped(x*diameter, y*diameter, Color.RED, map));
                 }
             }
         }
@@ -116,7 +118,7 @@ public class Pacman extends JPanel {
                 return false;
             }
         }catch(Exception E){
-            System.out.println(this.x/diameter + " " + this.y/diameter);
+            System.out.println(E.getMessage());
         }
         return false;
 
@@ -141,7 +143,7 @@ public class Pacman extends JPanel {
                 return false;
             }
         }catch (Exception e){
-            System.out.println(this.x/diameter + " " +this.y/diameter);
+            System.out.println(e.getMessage());
         }
         return false;
     }
@@ -168,7 +170,27 @@ public class Pacman extends JPanel {
             public void run() {
                 while (true) {
                     repaint();
-//                    try {Thread.sleep(2);} catch (Exception ex) {}
+                    try {
+                        Thread.sleep(10);
+                        moveX();
+                        moveY();
+                        resetIfPacmanReachedEdge();
+                        if(isPacmanMoving()){
+                            moveMouth();
+//                            for (int i = 0; i<ghosts.size(); i++){
+//
+//                            }
+                        }
+                        for (int i = 0; i<ghosts.size(); i++){
+                            ghosts.get(i).setTargetPosition(new Point(x, y));
+                            ghosts.get(i).move();
+                        }
+                        if(wakaSound==null || (!wakaSound.isRunning() && justAte)){
+                            if(wakaSound!=null) wakaSound.close();
+                            playWakaSound();
+                        }} catch (Exception ex) {
+                        System.out.println(ex.getMessage());
+                    }
                 }
             }
         });
@@ -206,7 +228,7 @@ public class Pacman extends JPanel {
     }
 
     private void resetIfPacmanReachedEdge(){
-        if(this.x/diameter >= num_x_block){
+        if(this.x >= num_x_block*diameter-10){
             this.x=radius+1;
         }
         if(this.x < radius+1){
@@ -216,20 +238,11 @@ public class Pacman extends JPanel {
     private int find_block(int p){
        return (int) floor((double) p / (double) (diameter));
     }
+
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.drawImage(background, 0, 0, null);
-        moveX();
-        moveY();
-        resetIfPacmanReachedEdge();
-        if(isPacmanMoving()){
-            moveMouth();
 
-        }
-        if(wakaSound==null || (!wakaSound.isRunning() && justAte)){
-            if(wakaSound!=null) wakaSound.close();
-            playWakaSound();
-        }
+        g.drawImage(background, 0, 0, null);
 
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -243,18 +256,20 @@ public class Pacman extends JPanel {
                 justAte = false;
             }
         }catch (Exception e){
-            System.out.println(this.x+" "+this.y);
+            System.out.println(e.getMessage());
         }
         for (int y = 0; y<map.length; y++){
             for (int x = 0; x<map[y].length; x++){
-                if(map[y][x] == 0){             //i need to do this to maintain constant speed. otherwise pacman speeds
-                    g2d.setColor(Color.BLACK); //up as pellets disappear
+                if(map[y][x] == 0){
+                    g2d.setColor(Color.BLACK);
                     g2d.fillOval(x*diameter + halfRadius, y*diameter + halfRadius,radius+1,radius+1);
                 }
             }
         }
         g2d.setColor(Color.YELLOW);
         g2d.fillArc(this.x - radius, this.y - radius,  20, 20, curr_start_angle, curr_end_angle);
-
+        for(int i=0; i<ghosts.size(); i++){
+            ghosts.get(i).draw(g2d);
+        }
     }
 }

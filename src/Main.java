@@ -31,8 +31,8 @@ public class Main extends JPanel {
         JSONTokener tokener = new JSONTokener(is);
         JSONObject object = new JSONObject(tokener);
         JSONArray map = object.getJSONArray("map");
-        int height = map.length()*20 + 45;
-        int width = ((JSONArray) map.get(0)).length()*20 + 25;
+        int height = map.length()*20 + 65;
+        int width = ((JSONArray) map.get(0)).length()*20 + 5;
         System.out.println(height);
         SwingUtilities.invokeLater(() -> {
             var frame = new JFrame("A simple graphics program");
