@@ -22,7 +22,7 @@ public class Pacman extends JPanel {
     private int radius = 10;
     private int halfRadius = radius/2;
     private int diameter = radius*2;
-    private int smallRadius = 0;
+    private int smallRadius = 5;
     private Clip wakaSound;
     private BufferedImage background;
     private boolean justAte = false;
@@ -131,8 +131,8 @@ public class Pacman extends JPanel {
             return false;
         }else if (direction ==  2 || direction == 3){ //horizontal check
             int next_pos_block_x = find_block(future_pos);
-            int pos_block_y = find_block(this.y + smallRadius + 1);
-            int pos_block_y2 = find_block(this.y - smallRadius + 1);
+            int pos_block_y = find_block(this.y + smallRadius);
+            int pos_block_y2 = find_block(this.y - smallRadius);
             try{
                 if(map[pos_block_y][next_pos_block_x] >= 2 || map[pos_block_y2][next_pos_block_x] >= 2){
                     return true;
@@ -149,7 +149,6 @@ public class Pacman extends JPanel {
     public void move(){
         this.prevX = this.x;
         this.prevY = this.y;
-        var inc = 1;
         //x is between (0 + radius) and (width - radius)
         if(direction == 0 && !isWallThere(UP)){
             this.y--;
@@ -244,19 +243,15 @@ public class Pacman extends JPanel {
             if( map[y_block][x_block] == 1 || map[y_block][x_block] == -1){
                 map[y_block][x_block]=0;
                 justAte = true;
+                Graphics2D bg_g2d = background.createGraphics();
+                bg_g2d.setColor(Color.BLACK);
+                bg_g2d.fillOval(x_block*diameter + halfRadius-1, y_block*diameter + halfRadius-1,radius+1,radius+1);
+                bg_g2d.dispose();
             } else {
                 justAte = false;
             }
         }catch (Exception e){
             System.out.println(e.getMessage());
-        }
-        for (int y = 0; y<map.length; y++){
-            for (int x = 0; x<map[y].length; x++){
-                if(map[y][x] == 0){
-                    g2d.setColor(Color.BLACK);
-                    g2d.fillOval(x*diameter + halfRadius, y*diameter + halfRadius,radius+1,radius+1);
-                }
-            }
         }
         g2d.setColor(Color.YELLOW);
         g2d.fillArc(this.x - radius, this.y - radius,  20, 20, curr_start_angle, curr_end_angle);
