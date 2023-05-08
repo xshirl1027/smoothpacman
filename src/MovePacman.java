@@ -12,13 +12,14 @@ class MovePacman extends KeyAdapter {
     public void keyPressed(KeyEvent e)
     {
         var pi = 180;
-        if (e.getKeyCode()== KeyEvent.VK_UP && !this.pacman.reachedWall_y(-inc2))
-            this.pacman.changeDir(0,-inc, this.pacman.init_start_angle +pi/2);
-        if (e.getKeyCode()== KeyEvent.VK_DOWN && !this.pacman.reachedWall_y(inc2))
-            this.pacman.changeDir(0, inc, this.pacman.init_start_angle +pi+pi/2);
-        if (e.getKeyCode()== KeyEvent.VK_LEFT && !this.pacman.reachedWall_x(-inc2))
-            this.pacman.changeDir(-inc,0, this.pacman.init_start_angle +pi);
-        if (e.getKeyCode()== KeyEvent.VK_RIGHT && !this.pacman.reachedWall_x(inc2))
-            this.pacman.changeDir(inc, 0, this.pacman.init_start_angle);
+        int prevDir = this.pacman.getDirection();
+        if (e.getKeyCode()== KeyEvent.VK_UP && !pacman.isWallThere(pacman.UP))
+            this.pacman.changeDir(Pacman.UP);
+        if (e.getKeyCode()== KeyEvent.VK_DOWN && !pacman.isWallThere(pacman.DOWN))
+            this.pacman.changeDir(Pacman.DOWN);
+        if (e.getKeyCode()== KeyEvent.VK_LEFT && !pacman.isWallThere(pacman.LEFT))
+            this.pacman.changeDir(Pacman.LEFT );
+        if (e.getKeyCode()== KeyEvent.VK_RIGHT && !pacman.isWallThere(pacman.RIGHT))
+            this.pacman.changeDir(Pacman.RIGHT);
     }
 }
