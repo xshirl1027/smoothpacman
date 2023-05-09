@@ -31,6 +31,8 @@ public class Pacman extends JPanel {
     private ArrayList<Color> colors = new ArrayList<>(Arrays.asList(Color.RED,Color.PINK,Color.CYAN,Color.ORANGE));;
     private int direction; //0 up 1 down 2 left 3 right
 
+    private int score = 0;
+
     //macros and static variables
     static final int HORIZONTAL=2, VERTICAL=3, TOP_LEFT=4, TOP_RIGHT=5, BOTTOM_RIGHT=6, BOTTOM_LEFT=7; //diff walls
     static final int SPECIAL_PELLET=-1, EMPTY=0, PELLET=1, GHOST=-2;
@@ -45,8 +47,8 @@ public class Pacman extends JPanel {
         this.y = 170;
         num_x_block = map[9].length;
         num_y_block = map.length;
-        this.screenHeight = num_y_block*20 + 5;
-        this.screenWidth = num_x_block*20 + 65;
+        this.screenHeight = num_y_block * 20 +65;
+        this.screenWidth = num_x_block * 20 + 5;
         this.screenHeightMinusRadius = this.screenHeight - radius;
         this.screenWidthMinusRadius = this.screenWidth - radius;
         this.ghosts = new ArrayList<>();
@@ -60,7 +62,6 @@ public class Pacman extends JPanel {
         g2d.fillRect(0, 0, screenWidth, screenHeight);
         for (int y = 0; y<map.length; y++){
             for (int x = 0; x<map[y].length; x++){
-
                 if(map[y][x] == SPECIAL_PELLET){
                     g2d.setColor(Color.blue);
                     g2d.fillOval(x*diameter + halfRadius, y*diameter + halfRadius,radius,radius);
@@ -224,6 +225,12 @@ public class Pacman extends JPanel {
             System.out.println("Error playing waka sound: " + ex.getMessage());
         }
     }
+    private void renderGameOver(Graphics2D g2d){
+            Font myFont = new Font ("broadway", 1, 18);
+            g2d.setFont(myFont);
+            g2d.setColor(Color.RED);
+            g2d.drawString("GAME OVER", screenWidth/2-3*diameter, screenHeight/2-2*diameter);
+    }
     private void moveMouth(){
         if(!pacmanCaught) {
             if(isPacmanMoving()){
@@ -273,6 +280,7 @@ public class Pacman extends JPanel {
         try{
             if( map[block.y][block.x] == 1 || map[block.y][block.x] == -1){
                 map[block.y][block.x]=0;
+                score++;
                 justAte = true;
                 Graphics2D bg_g2d = background.createGraphics();
                 bg_g2d.setColor(Color.BLACK);
@@ -284,9 +292,11 @@ public class Pacman extends JPanel {
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
-        if(arc_angle>5){ //pacman has died, don't draw him anymore
+        if(arc_angle>5){
             g2d.setColor(Color.YELLOW);
             g2d.fillArc(this.x - radius, this.y - radius,  20, 20, curr_start_angle, arc_angle);
+        }else{ //pacman has died, don't draw him anymore
+            renderGameOver(g2d);
         }
         for(int i=0; i<ghosts.size(); i++){
             Ghost ghost = ghosts.get(i);
@@ -300,5 +310,7 @@ public class Pacman extends JPanel {
                 pacmanCaught = true;
             }
         }
+        g2d.setColor(Color.yellow);
+        g2d.drawString("Score: " + score, radius, screenHeight-40);
     }
 }
