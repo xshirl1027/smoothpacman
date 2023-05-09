@@ -32,7 +32,6 @@ public class Main extends JPanel {
         JSONArray map = object.getJSONArray("map");
         int height = map.length()*20 + 65;
         int width = ((JSONArray) map.get(0)).length()*20 + 5;
-        System.out.println(height);
         SwingUtilities.invokeLater(() -> {
             var frame = new JFrame("A simple graphics program");
             frame.setSize(width, height);
