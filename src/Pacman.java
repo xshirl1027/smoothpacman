@@ -229,7 +229,7 @@ public class Pacman extends JPanel {
             Font myFont = new Font ("broadway", 1, 18);
             g2d.setFont(myFont);
             g2d.setColor(Color.RED);
-            g2d.drawString("GAME OVER", screenWidth/2-3*diameter, screenHeight/2-2*diameter);
+            g2d.drawString("GAME OVER", screenWidth/2-3*diameter+radius/2, screenHeight/2-2*diameter);
     }
     private void moveMouth(){
         if(!pacmanCaught) {
@@ -242,7 +242,7 @@ public class Pacman extends JPanel {
                 move_mouth_by = move_mouth_by + angle_inc;
             }
         }else{
-            if(curr_start_angle>0) curr_start_angle+=2;
+            if(curr_start_angle>0) curr_start_angle+=3;
             arc_angle -=5;
             if(arc_angle <=0){
                 gameOver = true;
