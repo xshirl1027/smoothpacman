@@ -68,4 +68,7 @@ public class Ghost {
         }
     }
 
+    public Point getPosition() {
+        return new Point(x,y);
+    }
 }
