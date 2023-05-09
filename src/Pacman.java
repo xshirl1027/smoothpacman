@@ -3,14 +3,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.*;
-
 import static java.lang.Math.floor;
 
 public class Pacman extends JPanel {
     int screenWidth, screenHeight;
     int screenWidthMinusRadius, screenHeightMinusRadius;
     int[][]map;
-
     double speed = 3;
     private int move_mouth_by = 1;
     private int angle_inc = 8;
@@ -28,12 +26,15 @@ public class Pacman extends JPanel {
     private int num_x_block = 0;
     private int num_y_block = 0;
     private ArrayList<Ghost> ghosts;
-
     private boolean gameOver = false;
-
     private boolean pacmanCaught = false;
-    private ArrayList<Color> colors;
+    private ArrayList<Color> colors = new ArrayList<>(Arrays.asList(Color.RED,Color.PINK,Color.CYAN,Color.ORANGE));;
     private int direction; //0 up 1 down 2 left 3 right
+
+    //macros and static variables
+    static final int HORIZONTAL=2, VERTICAL=3, TOP_LEFT=4, TOP_RIGHT=5, BOTTOM_RIGHT=6, BOTTOM_LEFT=7; //diff walls
+
+    static final int SPECIAL_PELLET=-1, EMPTY=0, PELLET=1, GHOST=-2;
     static final int UP = 0, DOWN = 1, LEFT = 2, RIGHT = 3;
     static final int pi = 180;
     static final Hashtable<Integer, Integer> angles = new Hashtable<Integer, Integer>() {{ put(UP, 45 + pi/2); put(DOWN, 45+pi*3/2); put(LEFT, 45+pi); put(RIGHT, 45); }};
@@ -49,7 +50,6 @@ public class Pacman extends JPanel {
         this.screenHeightMinusRadius = this.screenHeight - radius;
         this.screenWidthMinusRadius = this.screenWidth - radius;
         this.ghosts = new ArrayList<>();
-        this.colors = new ArrayList<>(Arrays.asList(Color.RED,Color.PINK,Color.CYAN,Color.ORANGE));;
         renderBackground();
         start_animation();
     }
@@ -60,43 +60,44 @@ public class Pacman extends JPanel {
         g2d.fillRect(0, 0, screenWidth, screenHeight);
         for (int y = 0; y<map.length; y++){
             for (int x = 0; x<map[y].length; x++){
-                if(map[y][x] == -1){
+
+                if(map[y][x] == SPECIAL_PELLET){
                     g2d.setColor(Color.blue);
                     g2d.fillOval(x*diameter + halfRadius, y*diameter + halfRadius,radius,radius);
                 }
-                if(map[y][x] == 1){
+                if(map[y][x] == PELLET){
                     g2d.setColor(Color.WHITE);
                     g2d.fillOval(x*diameter + halfRadius, y*diameter + halfRadius,radius,radius);
                 }
-                if(map[y][x] == 2){
+                if(map[y][x] == HORIZONTAL){
                     g2d.setColor(Color.blue);
                     g2d.drawRect(x*diameter, y*diameter+5,diameter,radius);
                 }
-                if(map[y][x] == 3){
+                if(map[y][x] == VERTICAL){
                     g2d.setColor(Color.blue);
                     g2d.drawRect(x*diameter+5, y*diameter,radius,diameter);
                 }
-                if(map[y][x] == 4){
+                if(map[y][x] == TOP_LEFT){
                     g2d.setColor(Color.blue);
                     g2d.drawRect(x*diameter+5, y*diameter+5,diameter-5,radius);
                     g2d.drawRect(x*diameter+5, y*diameter+5,radius,diameter-5);
                 }
-                if(map[y][x] == 5){
+                if(map[y][x] == TOP_RIGHT){
                     g2d.setColor(Color.blue);
                     g2d.drawRect(x*diameter, y*diameter+5,diameter-5,radius);
                     g2d.drawRect(x*diameter+5, y*diameter+5,radius,diameter-5);
                 }
-                if(map[y][x] == 6){
+                if(map[y][x] == BOTTOM_RIGHT){
                     g2d.setColor(Color.blue);
                     g2d.drawRect(x*diameter, y*diameter+5,diameter-5,radius);
                     g2d.drawRect(x*diameter+5, y*diameter,radius,diameter-5);
                 }
-                if(map[y][x] == 7){
+                if(map[y][x] == BOTTOM_LEFT){
                     g2d.setColor(Color.blue);
                     g2d.drawRect(x*diameter+5, y*diameter+5,diameter-5,radius);
                     g2d.drawRect(x*diameter+5, y*diameter,radius,diameter-5);
                 }
-                if(map[y][x] == -2){
+                if(map[y][x] == GHOST){
                     this.ghosts.add(new Ghost(x*diameter, y*diameter, colors.get(0), null, this));
                     colors.remove(0);
                 }
@@ -184,7 +185,6 @@ public class Pacman extends JPanel {
         var blockDOWN = find_block(new Point(pos.x, pos.y+radius+1));
         var blockLEFT = find_block(new Point(pos.x-radius-1, pos.y));
         var blockRIGHT = find_block(new Point(pos.x+radius+1, pos.y));
-
         return new int[]{map[blockUP.y][blockUP.x],map[blockDOWN.y][blockDOWN.x],map[blockLEFT.y][blockLEFT.x],map[blockRIGHT.y][blockRIGHT.x]};
     }
     public void start_animation(){
@@ -205,7 +205,6 @@ public class Pacman extends JPanel {
                     } catch (Exception ex) {
                         System.out.println(ex.getMessage());
                     }
-//                    if(pacman)
                 }
             }
         });
@@ -241,7 +240,6 @@ public class Pacman extends JPanel {
                 gameOver = true;
             }
         }
-
     }
 
     private boolean isPacmanMoving(){
@@ -266,9 +264,7 @@ public class Pacman extends JPanel {
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-
         g.drawImage(background, 0, 0, null);
-
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         Point block = find_block(new Point(this.x, this.y));
@@ -286,7 +282,7 @@ public class Pacman extends JPanel {
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
-        if(arc_angle>0){
+        if(arc_angle>5){ //pacman has died, don't draw him anymore
             g2d.setColor(Color.YELLOW);
             g2d.fillArc(this.x - radius, this.y - radius,  20, 20, curr_start_angle, arc_angle);
         }
@@ -302,6 +298,5 @@ public class Pacman extends JPanel {
                 pacmanCaught = true;
             }
         }
-
     }
 }
