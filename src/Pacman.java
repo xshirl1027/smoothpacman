@@ -33,11 +33,11 @@ public class Pacman extends JPanel {
 
     //macros and static variables
     static final int HORIZONTAL=2, VERTICAL=3, TOP_LEFT=4, TOP_RIGHT=5, BOTTOM_RIGHT=6, BOTTOM_LEFT=7; //diff walls
-
     static final int SPECIAL_PELLET=-1, EMPTY=0, PELLET=1, GHOST=-2;
     static final int UP = 0, DOWN = 1, LEFT = 2, RIGHT = 3;
     static final int pi = 180;
     static final Hashtable<Integer, Integer> angles = new Hashtable<Integer, Integer>() {{ put(UP, 45 + pi/2); put(DOWN, 45+pi*3/2); put(LEFT, 45+pi); put(RIGHT, 45); }};
+
     public Pacman(int[][]map) {
         this.map = map;
         this.direction = -1; //stationary
@@ -109,7 +109,6 @@ public class Pacman extends JPanel {
         this.direction = direction;
         this.min_start_angle = angles.get(direction);
     }
-
     public boolean pacmanCaught(){
         return pacmanCaught;
     }
@@ -126,7 +125,7 @@ public class Pacman extends JPanel {
         }else if(direction == LEFT){
             future_pos = new Point( this.x - this.radius - 1, this.y + smallRadius);
             future_pos2 = new Point(this.x - this.radius - 1, this.y - smallRadius);
-        }else{
+        }else{ //RIGHT
             future_pos = new Point(this.x + this.radius + 1, this.y + smallRadius);
             future_pos2 = new Point(this.x + this.radius + 1, this.y - smallRadius);
         }
@@ -159,6 +158,7 @@ public class Pacman extends JPanel {
         }
         return false;
     }
+
     public void move(){
         if(pacmanCaught){
             return;
@@ -187,6 +187,7 @@ public class Pacman extends JPanel {
         var blockRIGHT = find_block(new Point(pos.x+radius+1, pos.y));
         return new int[]{map[blockUP.y][blockUP.x],map[blockDOWN.y][blockDOWN.x],map[blockLEFT.y][blockLEFT.x],map[blockRIGHT.y][blockRIGHT.x]};
     }
+
     public void start_animation(){
         Thread animationThread = new Thread(new Runnable() {
             public void run() {
@@ -258,6 +259,7 @@ public class Pacman extends JPanel {
             this.x=(num_x_block-1)*diameter;
         }
     }
+
     private Point find_block(Point pos){
        return new Point((int) floor((double) pos.x / (double) (diameter)), (int) floor((double) pos.y / (double) (diameter)));
     }
@@ -290,7 +292,7 @@ public class Pacman extends JPanel {
             Ghost ghost = ghosts.get(i);
             Point pos = ghost.getPosition();
             ghost.draw(g2d);
-            int [] surrounding_blocks = get_surrounding_blocks(pos);
+            int [] surrounding_blocks = get_surrounding_blocks(new Point(pos.x+radius, pos.y+radius));
             ghost.move(surrounding_blocks);
             Rectangle rec1 = new Rectangle(pos.x, pos.y, diameter, diameter); //ghost square outline for intersection
             Rectangle rec2 = new Rectangle(x-radius, y-radius, diameter, diameter); //pacman square outline
