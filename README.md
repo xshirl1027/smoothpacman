@@ -8,10 +8,14 @@ Object-Oriented programming\
 Randomness for ghost movements
 
 
-https://github.com/xshirl1027/smoothpacman/assets/12800360/63cfb433-85ba-4372-ad5f-01b81a7cbc5a
+
 
 
 required:
 openjdk 11.0.12 64-Bit\
 org.json library
+
+
+
+https://github.com/xshirl1027/smoothpacman/assets/12800360/fd5341c2-6855-4c33-8f33-6e7dc59c9307
 
