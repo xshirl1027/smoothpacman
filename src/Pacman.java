@@ -227,7 +227,7 @@ public class Pacman extends JPanel {
 
     public void playIntroSound(){
         try {
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(getClass().getResourceAsStream("intro.wav"));
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(getClass().getResourceAsStream("sounds/intro.wav"));
             intro = AudioSystem.getClip();
             intro.open(audioInputStream);
             FloatControl gainControl = (FloatControl) intro.getControl(FloatControl.Type.MASTER_GAIN);
@@ -239,7 +239,7 @@ public class Pacman extends JPanel {
     }
     public void playPacmanDeathSound(){
         try {
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(getClass().getResourceAsStream("pacman_death.wav"));
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(getClass().getResourceAsStream("sounds/pacman_death.wav"));
             deathSound = AudioSystem.getClip();
             deathSound.open(audioInputStream);
             FloatControl gainControl = (FloatControl) wakaSound.getControl(FloatControl.Type.MASTER_GAIN);
@@ -250,7 +250,7 @@ public class Pacman extends JPanel {
     }
     public void playWakaSound(){
         try {
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(getClass().getResourceAsStream("waka.wav"));
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(getClass().getResourceAsStream("sounds/waka.wav"));
             wakaSound = AudioSystem.getClip();
             wakaSound.open(audioInputStream);
             FloatControl gainControl = (FloatControl) wakaSound.getControl(FloatControl.Type.MASTER_GAIN);
