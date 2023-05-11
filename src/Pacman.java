@@ -4,7 +4,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.*;
 import static java.lang.Math.floor;
-import static java.lang.Math.pow;
 
 public class Pacman extends JPanel {
     int screenWidth, screenHeight;
@@ -21,20 +20,20 @@ public class Pacman extends JPanel {
     private int halfRadius = radius/2;
     private int diameter = radius*2;
     private int smallRadius = 3;
-    private Clip wakaSound;
 
+    //these sound variables are here to ensure that only one is played at a time
+    private Clip wakaSound;
     private Clip sirenSound;
     private Clip intro;
     private Clip deathSound;
     private Clip powerPelletSound;
     private Clip eatGhostSound;
 
-
-    private boolean playedOnce=false;
-    private BufferedImage background;
-    private boolean justAte = false;
-    private int num_x_block = 0;
-    private int num_y_block = 0;
+    private boolean deathPlayedOnce =false; //make sure the death sound is not looped
+    private BufferedImage background; //pre-render static elements like maze and pellet
+    private boolean justAte = false; //play waka sound when pacman eats a pellet
+    private int num_x_block = 0; //width of map data
+    private int num_y_block = 0; //height of map data
     private ArrayList<Ghost> ghosts;
     private boolean gameOver = false;
     private boolean pacmanCaught = false;
@@ -48,7 +47,7 @@ public class Pacman extends JPanel {
     static final int SPECIAL_PELLET=-1, EMPTY=0, PELLET=1, GHOST=-2, FRUIT=-3;
     static final int UP = 0, DOWN = 1, LEFT = 2, RIGHT = 3;
     static final int pi = 180;
-    static final Hashtable<Integer, Integer> angles = new Hashtable<Integer, Integer>() {{ put(UP, 45 + pi/2); put(DOWN, 45+pi*3/2); put(LEFT, 45+pi); put(RIGHT, 45); }};
+    static final Hashtable<Integer, Integer> angles = new Hashtable<>() {{ put(UP, 45 + pi/2); put(DOWN, 45+pi*3/2); put(LEFT, 45+pi); put(RIGHT, 45); }};
 
     public Pacman(int[][]map) {
         this.map = map;
@@ -62,7 +61,6 @@ public class Pacman extends JPanel {
         this.screenHeightMinusRadius = this.screenHeight - radius;
         this.screenWidthMinusRadius = this.screenWidth - radius;
         this.ghosts = new ArrayList<>();
-//        renderBackground();
         start_animation();
     }
     private void renderBackground(){
@@ -313,6 +311,8 @@ public class Pacman extends JPanel {
         }
     }
     private void renderGameOver(Graphics2D g2d){
+            g2d.setColor(Color.YELLOW);
+            g2d.drawString("Score: "+ score, screenWidth/2-3*diameter+radius, screenHeight/2-4*diameter);
             Font myFont = new Font ("broadway", 1, 18);
             g2d.setFont(myFont);
             g2d.setColor(Color.RED);
@@ -405,9 +405,9 @@ public class Pacman extends JPanel {
             if(rec1.intersects(rec2)){
                 if(!ghost.isFrightened()){
                     pacmanCaught = true;
-                    if(!playedOnce && (deathSound==null || !deathSound.isRunning())){
+                    if(!deathPlayedOnce && (deathSound==null || !deathSound.isRunning())){
                         playPacmanDeathSound();
-                        playedOnce = true;
+                        deathPlayedOnce = true;
                     }
                 }else {
                     score += 50;

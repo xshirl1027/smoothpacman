@@ -12,15 +12,6 @@ import javax.swing.JPanel;
  */
 public class Main extends JPanel {
     private static final long serialVersionUID = 7148504528835036003L;
-
-    /**
-     * Called by the runtime system whenever the panel needs painting.
-     */
-
-
-    /**
-     * A little driver in case you want a stand-alone application.
-     */
     public static void main(String[] args) {
         var resourceName = "map.json";
         InputStream is = Main.class.getResourceAsStream(resourceName);

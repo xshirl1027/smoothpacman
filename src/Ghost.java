@@ -41,6 +41,7 @@ public class Ghost {
     public void turnOffFrightMode(){
         this.speed = normal_speed;
         this.color = normal_color;
+        this.frightModeCounter = 0;
     }
     public void setEaten(){
         x=init_x;
