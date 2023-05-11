@@ -312,7 +312,7 @@ public class Pacman extends JPanel {
     }
     private void renderGameOver(Graphics2D g2d){
             g2d.setColor(Color.YELLOW);
-            g2d.drawString("Score: "+ score, screenWidth/2-3*diameter+radius, screenHeight/2-4*diameter);
+            g2d.drawString("Score: "+ score, screenWidth/2-3*diameter+radius, screenHeight/2-3*diameter-radius/2);
             Font myFont = new Font ("broadway", 1, 18);
             g2d.setFont(myFont);
             g2d.setColor(Color.RED);
@@ -378,6 +378,7 @@ public class Pacman extends JPanel {
                 map[block.y][block.x]=0;
                 score++;
                 justAte = true; //this will trigger the waka sound
+                //we color in the eaten pellet with black
                 Graphics2D bg_g2d = background.createGraphics();
                 bg_g2d.setColor(Color.BLACK);
                 bg_g2d.fillOval(block.x*diameter + halfRadius-1, block.y*diameter + halfRadius-1,radius+1,radius+1);
@@ -388,28 +389,29 @@ public class Pacman extends JPanel {
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
-        if(arc_angle>5){
+        if(arc_angle>5){ //pacman is not dead yet, keep drawing him
             g2d.setColor(Color.YELLOW);
             g2d.fillArc(this.x - radius, this.y - radius,  20, 20, curr_start_angle, arc_angle);
         }else{ //pacman has died, don't draw him anymore
             renderGameOver(g2d);
         }
-        for(int i=0; i<ghosts.size(); i++){
+        for(int i=0; i<ghosts.size(); i++){ // render ghosts and check for overlap with pacman
             Ghost ghost = ghosts.get(i);
             Point pos = ghost.getPosition();
             ghost.draw(g2d);
             int [] surrounding_blocks = get_surrounding_blocks(new Point(pos.x+radius, pos.y+radius));
             ghost.move(surrounding_blocks);
-            Rectangle rec1 = new Rectangle(pos.x, pos.y, diameter, diameter); //ghost square outline for intersection
-            Rectangle rec2 = new Rectangle(x-radius, y-radius, diameter, diameter); //pacman square outline
-            if(rec1.intersects(rec2)){
-                if(!ghost.isFrightened()){
+            //check for overlap with rectangles
+            Rectangle rec1 = new Rectangle(pos.x, pos.y, diameter-1, diameter-1); //ghost square outline for intersection
+            Rectangle rec2 = new Rectangle(x-radius, y-radius, diameter-1, diameter-1); //pacman square outline
+            if(rec1.intersects(rec2)){ //overlap found
+                if(!ghost.isFrightened()){ //ghost is in normal mode, pacman is eaten
                     pacmanCaught = true;
                     if(!deathPlayedOnce && (deathSound==null || !deathSound.isRunning())){
                         playPacmanDeathSound();
                         deathPlayedOnce = true;
                     }
-                }else {
+                }else { //ghost is in fright mode, pacman eats ghost
                     score += 50;
                     ghost.setEaten();
                     if(eatGhostSound==null || !eatGhostSound.isRunning()){
@@ -418,6 +420,7 @@ public class Pacman extends JPanel {
                 }
             }
         }
+        //scoreboard
         g2d.setColor(Color.yellow);
         g2d.drawString("Score: " + score, radius, screenHeight-40);
     }
