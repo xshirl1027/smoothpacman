@@ -12,6 +12,6 @@ https://github.com/xshirl1027/smoothpacman/assets/12800360/63cfb433-85ba-4372-ad
 
 
 required:
-openjdk 11.0.12 64-Bit
+openjdk 11.0.12 64-Bit\
 org.json library
 
