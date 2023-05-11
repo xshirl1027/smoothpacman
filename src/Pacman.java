@@ -63,6 +63,8 @@ public class Pacman extends JPanel {
         this.ghosts = new ArrayList<>();
         start_animation();
     }
+
+    //render static background
     private void renderBackground(){
         background = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_RGB);
         Graphics2D g2d = background.createGraphics();
@@ -361,6 +363,22 @@ public class Pacman extends JPanel {
     private void drawBackground(Graphics g){
         g.drawImage(background, 0, 0, null);
     }
+
+    private boolean checkBoxIntersection(int x,int y,int x2,int y2,int size, int size2){
+        Rectangle rec1 = new Rectangle(x, y, size, size); //ghost square outline for intersection
+        Rectangle rec2 = new Rectangle(x2, y2, size2, size2); //pacman square outline
+        if(rec1.intersects(rec2)) { //overlap found
+            return true;
+        }
+        return false;
+    }
+
+    public void erasePellet(Graphics2D g2d, int x, int y){
+        Graphics2D bg_g2d = background.createGraphics();
+        bg_g2d.setColor(Color.BLACK);
+        bg_g2d.fillOval(x, y,radius+1,radius+1);
+        bg_g2d.dispose();
+    }
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
@@ -379,10 +397,7 @@ public class Pacman extends JPanel {
                 score++;
                 justAte = true; //this will trigger the waka sound
                 //we color in the eaten pellet with black
-                Graphics2D bg_g2d = background.createGraphics();
-                bg_g2d.setColor(Color.BLACK);
-                bg_g2d.fillOval(block.x*diameter + halfRadius-1, block.y*diameter + halfRadius-1,radius+1,radius+1);
-                bg_g2d.dispose();
+                erasePellet(background.createGraphics(), block.x*diameter + halfRadius-1,block.y*diameter + halfRadius-1);
             } else {
                 justAte = false;
             }
@@ -399,12 +414,10 @@ public class Pacman extends JPanel {
             Ghost ghost = ghosts.get(i);
             Point pos = ghost.getPosition();
             ghost.draw(g2d);
-            int [] surrounding_blocks = get_surrounding_blocks(new Point(pos.x+radius, pos.y+radius));
-            ghost.move(surrounding_blocks);
-            //check for overlap with rectangles
-            Rectangle rec1 = new Rectangle(pos.x, pos.y, diameter-1, diameter-1); //ghost square outline for intersection
-            Rectangle rec2 = new Rectangle(x-radius, y-radius, diameter-1, diameter-1); //pacman square outline
-            if(rec1.intersects(rec2)){ //overlap found
+            //pass the surrounding blocks to ghost
+            ghost.move(get_surrounding_blocks(new Point(pos.x+radius, pos.y+radius)));
+            //check for overlap with pacman
+            if(checkBoxIntersection(pos.x,pos.y,x-radius,y-radius,diameter-1,diameter-1)){ //overlap found
                 if(!ghost.isFrightened()){ //ghost is in normal mode, pacman is eaten
                     pacmanCaught = true;
                     if(!deathPlayedOnce && (deathSound==null || !deathSound.isRunning())){
