@@ -242,7 +242,7 @@ public class Pacman extends JPanel {
             intro.start();
             audioInputStream.close();
         } catch (Exception ex) {
-            System.out.println("Error playing sound: " + ex.getMessage());
+            System.out.println("Error playing intro sound: " + ex.getMessage());
         }
     }
     public void playPacmanDeathSound(){
@@ -250,11 +250,11 @@ public class Pacman extends JPanel {
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(getClass().getResourceAsStream("sounds/pacman_death.wav"));
             deathSound = AudioSystem.getClip();
             deathSound.open(audioInputStream);
-            FloatControl gainControl = (FloatControl) wakaSound.getControl(FloatControl.Type.MASTER_GAIN);
+            FloatControl gainControl = (FloatControl) deathSound.getControl(FloatControl.Type.MASTER_GAIN);
             deathSound.start();
             audioInputStream.close();
         } catch (Exception ex) {
-            System.out.println("Error playing waka sound: " + ex.getMessage());
+            System.out.println("Error playing pacman death sound: " + ex.getMessage());
         }
     }
     public void playWakaSound(){
@@ -263,11 +263,11 @@ public class Pacman extends JPanel {
             wakaSound = AudioSystem.getClip();
             wakaSound.open(audioInputStream);
             FloatControl gainControl = (FloatControl) wakaSound.getControl(FloatControl.Type.MASTER_GAIN);
-            gainControl.setValue(-17.0f);
+            gainControl.setValue(-18.5f);
             wakaSound.start();
             audioInputStream.close();
         } catch (Exception ex) {
-            System.out.println("Error playing sound: " + ex.getMessage());
+            System.out.println("Error playing waka sound: " + ex.getMessage());
         }
     }
 
@@ -276,12 +276,12 @@ public class Pacman extends JPanel {
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(getClass().getResourceAsStream("sounds/siren.wav"));
             sirenSound = AudioSystem.getClip();
             sirenSound.open(audioInputStream);
-            FloatControl gainControl = (FloatControl) wakaSound.getControl(FloatControl.Type.MASTER_GAIN);
+            FloatControl gainControl = (FloatControl) sirenSound.getControl(FloatControl.Type.MASTER_GAIN);
             gainControl.setValue(-17.0f);
             sirenSound.start();
             audioInputStream.close();
         } catch (Exception ex) {
-            System.out.println("Error playing sound: " + ex.getMessage());
+            System.out.println("Error playing siren sound: " + ex.getMessage());
         }
     }
 
@@ -290,12 +290,12 @@ public class Pacman extends JPanel {
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(getClass().getResourceAsStream("sounds/power_pellet.wav"));
             powerPelletSound = AudioSystem.getClip();
             powerPelletSound.open(audioInputStream);
-            FloatControl gainControl = (FloatControl) wakaSound.getControl(FloatControl.Type.MASTER_GAIN);
+            FloatControl gainControl = (FloatControl) powerPelletSound.getControl(FloatControl.Type.MASTER_GAIN);
             gainControl.setValue(-17.0f);
             powerPelletSound.start();
             audioInputStream.close();
         } catch (Exception ex) {
-            System.out.println("Error playing sound: " + ex.getMessage());
+            System.out.println("Error playing power pellet sound: " + ex.getMessage());
         }
     }
 
@@ -304,12 +304,12 @@ public class Pacman extends JPanel {
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(getClass().getResourceAsStream("sounds/eat_ghost.wav"));
             eatGhostSound = AudioSystem.getClip();
             eatGhostSound.open(audioInputStream);
-            FloatControl gainControl = (FloatControl) wakaSound.getControl(FloatControl.Type.MASTER_GAIN);
+            FloatControl gainControl = (FloatControl) eatGhostSound.getControl(FloatControl.Type.MASTER_GAIN);
             gainControl.setValue(-17.0f);
             eatGhostSound.start();
             audioInputStream.close();
         } catch (Exception ex) {
-            System.out.println("Error playing sound: " + ex.getMessage());
+            System.out.println("Error playing eating ghost sound: " + ex.getMessage());
         }
     }
     private void renderGameOver(Graphics2D g2d){
