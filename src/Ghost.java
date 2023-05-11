@@ -14,7 +14,7 @@ public class Ghost {
 
     private Pacman pacman;
     private int speed = 3;
-    private int frightModeSpeed = speed+2;
+    private int frightModeSpeed = 5;
 
     private int frightModeCounter = 0;
     private int normal_speed = 4;
@@ -33,7 +33,7 @@ public class Ghost {
     }
 
     public void turnOnFrightMode(){
-        this.frightModeCounter=195;
+        this.frightModeCounter=200;
         this.color = Color.BLUE;
         this.speed=frightModeSpeed;
     }
