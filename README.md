@@ -1,5 +1,5 @@
 # smoothpacman
-non-pixelated version of pacman. this is something I made from scratch, completely rendered in java graphics, not external images used.
+non-pixelated version of pacman. this is something I made from scratch, completely rendered in java graphics, no external images used.
 
 Uses:\
 Hashtable for the pellets animation
