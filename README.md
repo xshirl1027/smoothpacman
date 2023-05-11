@@ -16,6 +16,6 @@ openjdk 11.0.12 64-Bit\
 org.json library
 
 
-
+note: the sound and video are not synched in this recording for some reason. in the game they are.
 https://github.com/xshirl1027/smoothpacman/assets/12800360/fd5341c2-6855-4c33-8f33-6e7dc59c9307
 
