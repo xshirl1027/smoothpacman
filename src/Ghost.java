@@ -6,25 +6,50 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Ghost {
-    private int x;
-    private int y;
+    private int x,y;
+    private int init_x, init_y;
     private int direction;
     private int prevDirection;
     private Color color;
 
     private Pacman pacman;
-    private int speed = 4;
-    private int[] surrounding_blocks; //ex. in the order of up down left right [0,0,0,0] or [1,1,0,0]
-    public Ghost(int x, int y, Color color, int[] surrounding_blocks, Pacman pacman) {
+    private int speed = 3;
+    private int frightModeSpeed = speed+2;
+
+    private int frightModeCounter = 0;
+    private int normal_speed = 4;
+    private Color normal_color;
+
+    public Ghost(int x, int y, Color color, Pacman pacman) {
         this.pacman = pacman;
         this.x = x;
         this.y = y;
+        this.init_x = x;
+        this.init_y = y;
         this.color = color;
+        this.normal_color = color;
         this.direction = 0;
         this.prevDirection = 0;
-        this.surrounding_blocks = surrounding_blocks;
     }
 
+    public void turnOnFrightMode(){
+        this.frightModeCounter=500;
+        this.color = Color.BLUE;
+        this.speed=frightModeSpeed;
+    }
+
+    public void turnOffFrightMode(){
+        this.speed = normal_speed;
+        this.color = normal_color;
+    }
+    public void setEaten(){
+        x=init_x;
+        y=init_y;
+        turnOffFrightMode();
+    }
+    public boolean isFrightened(){
+        return frightModeCounter>0;
+    }
     public void draw(Graphics2D g2d){
         int size = 20;
         // Body
@@ -40,12 +65,15 @@ public class Ghost {
         g2d.setColor(Color.BLACK);
         g2d.fillOval(x + eyeOffset/2 + eyeSize / 4, y + eyeOffset + eyeSize / 4 + 1, eyeSize / 2, eyeSize / 2);
         g2d.fillOval(x + size - eyeOffset/2 - eyeSize + eyeSize / 4, y + eyeOffset + eyeSize / 4 +1, eyeSize / 2, eyeSize / 2);
+        frightModeCounter--;
+        if(frightModeCounter==0){
+            turnOffFrightMode();
+        }
     }
     public void move(int[] surrounding_blocks) {
         if(pacman.pacmanCaught()){
            return;
         }
-        this.surrounding_blocks = surrounding_blocks;
         //if there is no blockage in the block in the direction of movement, move ghost by one block in that direction
         //else choose new viable direction
         this.prevDirection = this.direction;

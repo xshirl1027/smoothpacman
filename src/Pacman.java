@@ -99,7 +99,7 @@ public class Pacman extends JPanel {
                     g2d.drawRect(x*diameter+5, y*diameter,radius,diameter-5);
                 }
                 if(map[y][x] == GHOST){
-                    this.ghosts.add(new Ghost(x*diameter, y*diameter, colors.get(0), null, this));
+                    this.ghosts.add(new Ghost(x*diameter, y*diameter, colors.get(0), this));
                     colors.remove(0);
                 }
             }
@@ -279,9 +279,14 @@ public class Pacman extends JPanel {
         Point block = find_block(new Point(this.x, this.y));
         try{
             if( map[block.y][block.x] == 1 || map[block.y][block.x] == -1){
+                if(map[block.y][block.x] == -1){
+                    for(int i=0; i<ghosts.size();i++){
+                        ghosts.get(i).turnOnFrightMode();
+                    }
+                }
                 map[block.y][block.x]=0;
                 score++;
-                justAte = true;
+                justAte = true; //this will trigger the waka sound
                 Graphics2D bg_g2d = background.createGraphics();
                 bg_g2d.setColor(Color.BLACK);
                 bg_g2d.fillOval(block.x*diameter + halfRadius-1, block.y*diameter + halfRadius-1,radius+1,radius+1);
@@ -307,7 +312,12 @@ public class Pacman extends JPanel {
             Rectangle rec1 = new Rectangle(pos.x, pos.y, diameter, diameter); //ghost square outline for intersection
             Rectangle rec2 = new Rectangle(x-radius, y-radius, diameter, diameter); //pacman square outline
             if(rec1.intersects(rec2)){
-                pacmanCaught = true;
+                if(!ghost.isFrightened()){
+                    pacmanCaught = true;
+                }else {
+                    score += 50;
+                    ghost.setEaten();
+                }
             }
         }
         g2d.setColor(Color.yellow);
