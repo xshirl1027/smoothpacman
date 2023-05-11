@@ -33,7 +33,7 @@ public class Ghost {
     }
 
     public void turnOnFrightMode(){
-        this.frightModeCounter=500;
+        this.frightModeCounter=195;
         this.color = Color.BLUE;
         this.speed=frightModeSpeed;
     }

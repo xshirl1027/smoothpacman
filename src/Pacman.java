@@ -21,6 +21,10 @@ public class Pacman extends JPanel {
     private int diameter = radius*2;
     private int smallRadius = 3;
     private Clip wakaSound;
+    private Clip intro;
+    private Clip deathSound;
+
+    private boolean playedOnce=false;
     private BufferedImage background;
     private boolean justAte = false;
     private int num_x_block = 0;
@@ -35,7 +39,7 @@ public class Pacman extends JPanel {
 
     //macros and static variables
     static final int HORIZONTAL=2, VERTICAL=3, TOP_LEFT=4, TOP_RIGHT=5, BOTTOM_RIGHT=6, BOTTOM_LEFT=7; //diff walls
-    static final int SPECIAL_PELLET=-1, EMPTY=0, PELLET=1, GHOST=-2;
+    static final int SPECIAL_PELLET=-1, EMPTY=0, PELLET=1, GHOST=-2, FRUIT=-3;
     static final int UP = 0, DOWN = 1, LEFT = 2, RIGHT = 3;
     static final int pi = 180;
     static final Hashtable<Integer, Integer> angles = new Hashtable<Integer, Integer>() {{ put(UP, 45 + pi/2); put(DOWN, 45+pi*3/2); put(LEFT, 45+pi); put(RIGHT, 45); }};
@@ -52,7 +56,7 @@ public class Pacman extends JPanel {
         this.screenHeightMinusRadius = this.screenHeight - radius;
         this.screenWidthMinusRadius = this.screenWidth - radius;
         this.ghosts = new ArrayList<>();
-        renderBackground();
+//        renderBackground();
         start_animation();
     }
     private void renderBackground(){
@@ -190,19 +194,27 @@ public class Pacman extends JPanel {
     }
 
     public void start_animation(){
+        playIntroSound();
+        renderBackground();
         Thread animationThread = new Thread(new Runnable() {
             public void run() {
                 while (!gameOver) {
                     try {
-                        repaint();
-                        Thread.sleep(25);
-                        move();
-                        resetIfPacmanReachedEdge();
-                        moveMouth();
-                        //code for getting surrounding block data from map
-                        if(wakaSound==null || (!wakaSound.isRunning() && justAte)){
-                            if(wakaSound!=null) wakaSound.close();
-                            playWakaSound();
+                        if(intro!=null && intro.isRunning()){
+                        } else{
+                            if(intro!=null){
+                                intro.close();
+                            }
+                            repaint();
+                            Thread.sleep(25);
+                            move();
+                            resetIfPacmanReachedEdge();
+                            moveMouth();
+                            //code for getting surrounding block data from map
+                            if((wakaSound==null || !wakaSound.isRunning()) && justAte){
+                                if(wakaSound!=null) wakaSound.close();
+                                playWakaSound();
+                            }
                         }
                     } catch (Exception ex) {
                         System.out.println(ex.getMessage());
@@ -213,13 +225,36 @@ public class Pacman extends JPanel {
         animationThread.start();
     }
 
+    public void playIntroSound(){
+        try {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(getClass().getResourceAsStream("intro.wav"));
+            intro = AudioSystem.getClip();
+            intro.open(audioInputStream);
+            FloatControl gainControl = (FloatControl) intro.getControl(FloatControl.Type.MASTER_GAIN);
+            gainControl.setValue(-15.0f);
+            intro.start();
+        } catch (Exception ex) {
+            System.out.println("Error playing waka sound: " + ex.getMessage());
+        }
+    }
+    public void playPacmanDeathSound(){
+        try {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(getClass().getResourceAsStream("pacman_death.wav"));
+            deathSound = AudioSystem.getClip();
+            deathSound.open(audioInputStream);
+            FloatControl gainControl = (FloatControl) wakaSound.getControl(FloatControl.Type.MASTER_GAIN);
+            deathSound.start();
+        } catch (Exception ex) {
+            System.out.println("Error playing waka sound: " + ex.getMessage());
+        }
+    }
     public void playWakaSound(){
         try {
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(getClass().getResourceAsStream("waka.wav"));
             wakaSound = AudioSystem.getClip();
             wakaSound.open(audioInputStream);
             FloatControl gainControl = (FloatControl) wakaSound.getControl(FloatControl.Type.MASTER_GAIN);
-            gainControl.setValue(-15.0f);
+            gainControl.setValue(-17.0f);
             wakaSound.start();
         } catch (Exception ex) {
             System.out.println("Error playing waka sound: " + ex.getMessage());
@@ -271,13 +306,16 @@ public class Pacman extends JPanel {
        return new Point((int) floor((double) pos.x / (double) (diameter)), (int) floor((double) pos.y / (double) (diameter)));
     }
 
+    private void drawBackground(Graphics g){
+        g.drawImage(background, 0, 0, null);
+    }
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.drawImage(background, 0, 0, null);
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         Point block = find_block(new Point(this.x, this.y));
         try{
+            drawBackground(g);
             if( map[block.y][block.x] == 1 || map[block.y][block.x] == -1){
                 if(map[block.y][block.x] == -1){
                     for(int i=0; i<ghosts.size();i++){
@@ -314,6 +352,10 @@ public class Pacman extends JPanel {
             if(rec1.intersects(rec2)){
                 if(!ghost.isFrightened()){
                     pacmanCaught = true;
+                    if(!playedOnce && (deathSound==null || !deathSound.isRunning())){
+                        playPacmanDeathSound();
+                        playedOnce = true;
+                    }
                 }else {
                     score += 50;
                     ghost.setEaten();
