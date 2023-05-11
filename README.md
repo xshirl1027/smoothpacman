@@ -1,11 +1,11 @@
 # smoothpacman
-non-pixelated version of pacman
+non-pixelated version of pacman. this is something I made from scratch, completely rendered in java graphics, not external images used.
 
 Uses:\
 Hashtable for the pellets animation
 
 Will use:\
--pathfinder for ghost movements\
+-randomness for ghost movements\
 -observer pattern for special pellet
 
 required:
