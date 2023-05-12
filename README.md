@@ -18,5 +18,5 @@ org.json library
 
 https://github.com/xshirl1027/smoothpacman/assets/12800360/fd5341c2-6855-4c33-8f33-6e7dc59c9307
 
-note: the sound and video are for some reason not synched in this recording for some reason. they are properly synched in the game.
+note: the sound and video are, for some reason, not synched in this recording. they are properly synched in the game.
 
