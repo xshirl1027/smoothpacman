@@ -1,6 +1,6 @@
 # smoothpacman
 non-pixelated version of pacman in 600 lines of code. \
-this is something I made completely from scratch, rendered in java graphics, no external images used.
+this is something I made completely from scratch with java graphics, no external images used.
 
 Uses:\
 Object-Oriented programming\
