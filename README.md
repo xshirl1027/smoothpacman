@@ -1,5 +1,5 @@
 # smoothpacman
-non-pixelated version of pacman in 600 lines of code. \
+This is a non-pixelated version of pacman written in JAVA in 600 lines of code. \
 this is warm up project--made completely from scratch with java graphics--no external images used.
 
 Uses:\
