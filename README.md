@@ -3,8 +3,9 @@ This is a non-pixelated version of pacman written in Java 11. Total 600 lines of
 this is warm up project--made completely from scratch with java graphics--no external images used.
 
 Uses:\
-JFrame, JPanel
+JFrame, JPanel\
 Object-Oriented programming\
+
 
 installations required:
 openjdk 11.0.12 64-Bit\
