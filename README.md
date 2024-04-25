@@ -3,15 +3,10 @@ This is a non-pixelated version of pacman written in Java 11 in 600 lines of cod
 this is warm up project--made completely from scratch with java graphics--no external images used.
 
 Uses:\
+JFrame, JPanel
 Object-Oriented programming\
-2D Array to store data for the map\
-Randomness for ghost movements
 
-
-
-
-
-required:
+installations required:
 openjdk 11.0.12 64-Bit\
 org.json library
 
