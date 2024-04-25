@@ -4,7 +4,7 @@ this is warm up project--made completely from scratch with java graphics--no ext
 
 Uses:\
 JFrame, JPanel\
-Object-Oriented programming\
+Object-Oriented programming
 
 
 installations required:
