@@ -1,6 +1,6 @@
 # smoothpacman
 This is a non-pixelated version of pacman written in Java 11. Total 600 lines of code. \
-this is warm up project--made completely from scratch with java graphics--no external images used.
+A warm up project--made completely from scratch with java graphics--no external images used.
 
 Uses:\
 JFrame, JPanel\
