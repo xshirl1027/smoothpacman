@@ -1,4 +1,5 @@
 import javax.sound.sampled.*;
+import java.io.BufferedInputStream;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -232,9 +233,15 @@ public class Pacman extends JPanel {
         animationThread.start();
     }
 
+    // Helper method to load audio from JAR resources without mark/reset issues
+    private AudioInputStream getAudioInputStream(String resourcePath) throws Exception {
+        BufferedInputStream bufferedStream = new BufferedInputStream(getClass().getResourceAsStream(resourcePath));
+        return AudioSystem.getAudioInputStream(bufferedStream);
+    }
+
     public void playIntroSound(){
         try {
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(getClass().getResourceAsStream("sounds/intro.wav"));
+            AudioInputStream audioInputStream = getAudioInputStream("sounds/intro.wav");
             intro = AudioSystem.getClip();
             intro.open(audioInputStream);
             FloatControl gainControl = (FloatControl) intro.getControl(FloatControl.Type.MASTER_GAIN);
@@ -247,7 +254,7 @@ public class Pacman extends JPanel {
     }
     public void playPacmanDeathSound(){
         try {
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(getClass().getResourceAsStream("sounds/pacman_death.wav"));
+            AudioInputStream audioInputStream = getAudioInputStream("sounds/pacman_death.wav");
             deathSound = AudioSystem.getClip();
             deathSound.open(audioInputStream);
             FloatControl gainControl = (FloatControl) deathSound.getControl(FloatControl.Type.MASTER_GAIN);
@@ -259,7 +266,7 @@ public class Pacman extends JPanel {
     }
     public void playWakaSound(){
         try {
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(getClass().getResourceAsStream("sounds/waka.wav"));
+            AudioInputStream audioInputStream = getAudioInputStream("sounds/waka.wav");
             wakaSound = AudioSystem.getClip();
             wakaSound.open(audioInputStream);
             FloatControl gainControl = (FloatControl) wakaSound.getControl(FloatControl.Type.MASTER_GAIN);
@@ -273,7 +280,7 @@ public class Pacman extends JPanel {
 
     public void playSirenSound(){
         try {
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(getClass().getResourceAsStream("sounds/siren.wav"));
+            AudioInputStream audioInputStream = getAudioInputStream("sounds/siren.wav");
             sirenSound = AudioSystem.getClip();
             sirenSound.open(audioInputStream);
             FloatControl gainControl = (FloatControl) sirenSound.getControl(FloatControl.Type.MASTER_GAIN);
@@ -287,7 +294,7 @@ public class Pacman extends JPanel {
 
     public void playPowerSound(){
         try {
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(getClass().getResourceAsStream("sounds/power_pellet.wav"));
+            AudioInputStream audioInputStream = getAudioInputStream("sounds/power_pellet.wav");
             powerPelletSound = AudioSystem.getClip();
             powerPelletSound.open(audioInputStream);
             FloatControl gainControl = (FloatControl) powerPelletSound.getControl(FloatControl.Type.MASTER_GAIN);
@@ -301,7 +308,7 @@ public class Pacman extends JPanel {
 
     public void playEatGhostSound(){
         try {
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(getClass().getResourceAsStream("sounds/eat_ghost.wav"));
+            AudioInputStream audioInputStream = getAudioInputStream("sounds/eat_ghost.wav");
             eatGhostSound = AudioSystem.getClip();
             eatGhostSound.open(audioInputStream);
             FloatControl gainControl = (FloatControl) eatGhostSound.getControl(FloatControl.Type.MASTER_GAIN);

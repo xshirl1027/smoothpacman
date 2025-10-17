@@ -1,21 +1,55 @@
 # smoothpacman
-non-pixelated version of pacman in 600 lines of code. 
-this is something I made from scratch, completely rendered in java graphics, no external images used.
+This is a non-pixelated version of pacman written in Java 11. Total 600 lines of code. \
+A warm up project--made completely from scratch with java graphics--no external images used.
 
-Uses:
+Uses:\
+JFrame, JPanel\
+Object-Oriented programming\
 
 - Object-Oriented programming
 - 2D Array to store data for the map
 - Randomness for ghost movements
 
-## Requirements
 
-- OpenJDK 11.0.12 64-Bit (or compatible Java version)
-- org.json library (included in `lib/json-20220924.jar`)
+## Prerequisites
+
+**You need to install:**
+
+- Java 11 or higher (OpenJDK 11.0.12 64-Bit recommended)
+  - Download from [OpenJDK](https://openjdk.org/) or [Oracle Java](https://www.oracle.com/java/technologies/javase-downloads.html)
+  - Verify installation: `java -version`
+
+**Already included in this repository:**
+
+- org.json library (`lib/json-20220924.jar`)
 
 ## How to Run
 
-### Option 1: Using Command Line
+### Option 1: Executable JAR (Simplest)
+
+1. Clone or download this repository
+2. Navigate to the project directory:
+
+   ```bash
+   cd smoothpacman
+   ```
+
+3. Run the game using one of these methods:
+
+   **Direct JAR execution:**
+
+   ```bash
+   java -jar smoothpacman.jar
+   ```
+
+   **Using convenience scripts:**
+
+   - On Linux/Mac: `./run.sh`
+   - On Windows: `run.bat` (double-click or run from command prompt)
+
+   *Note: If the JAR file doesn't exist, run `./build.sh` to create it.*
+
+### Option 2: Manual Compilation
 
 1. Clone or download this repository
 2. Navigate to the project directory:
@@ -36,7 +70,7 @@ Uses:
    java -cp "out:src:lib/json-20220924.jar" Main
    ```
 
-### Option 2: Using an IDE
+### Option 3: Using an IDE
 
 1. Open the project in your preferred Java IDE (IntelliJ IDEA, Eclipse, etc.)
 2. Add the `lib/json-20220924.jar` file to your project's classpath/build path
