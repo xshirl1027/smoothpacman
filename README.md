@@ -9,7 +9,11 @@ Object-Oriented programming\
 - Object-Oriented programming
 - 2D Array to store data for the map
 - Randomness for ghost movements
+## Demo
 
+[Game Demo Video](https://github.com/xshirl1027/smoothpacman/assets/12800360/fd5341c2-6855-4c33-8f33-6e7dc59c9307)
+
+Note: the sound and video are not synched in this recording for some reason. In the game they are.
 
 ## Prerequisites
 
@@ -88,9 +92,5 @@ Object-Oriented programming\
 - Sound effects are included and should play during gameplay
 - All graphics are rendered using Java's built-in graphics capabilities
 
-## Demo
 
-[Game Demo Video](https://github.com/xshirl1027/smoothpacman/assets/12800360/fd5341c2-6855-4c33-8f33-6e7dc59c9307)
-
-Note: the sound and video are not synched in this recording for some reason. In the game they are.
 
